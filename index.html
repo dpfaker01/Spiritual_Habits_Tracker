@@ -15,18 +15,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
+        /* STYLES */
         :root { --primary: #5b6bf0; --primary-dark: #4856b3; --secondary: #2ecc71; --accent: #f1c40f; --danger: #e74c3c; --bg: #f4f7f6; --surface: #ffffff; --text-main: #2c3e50; --text-light: #7f8c8d; --border: #e0e0e0; --shadow: 0 4px 6px rgba(0, 0, 0, 0.05); --radius: 12px; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
         header { background: var(--surface); padding: 1rem 2rem; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
         .logo { font-size: 1.5rem; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
         .current-date { font-size: 0.9rem; color: var(--text-light); font-weight: 500; }
         nav { display: flex; justify-content: center; background: var(--surface); margin: 1rem auto; border-radius: 50px; padding: 0.5rem; box-shadow: var(--shadow); width: 90%; max-width: 500px; }
-        
-        /* FIX: Better touch targets */
-        .nav-btn { background: none; border: none; padding: 0.75rem 1rem; border-radius: 40px; cursor: pointer; font-weight: 500; color: var(--text-light); transition: all 0.3s ease; flex: 1; font-size: 0.9rem; touch-action: manipulation; }
+        .nav-btn { background: none; border: none; padding: 0.75rem 1rem; border-radius: 40px; cursor: pointer; font-weight: 500; color: var(--text-light); transition: all 0.3s ease; flex: 1; font-size: 0.9rem; }
         .nav-btn.active { background-color: var(--primary); color: white; box-shadow: 0 2px 4px rgba(91, 107, 240, 0.3); }
-        
         main { flex: 1; padding: 1rem; max-width: 1100px; margin: 0 auto; width: 100%; padding-bottom: 3rem; }
         section { display: none; animation: fadeIn 0.4s ease; }
         section.active { display: block; }
@@ -100,11 +98,10 @@
     </header>
 
     <nav>
-        <!-- FIX 1: Pass 'this' to fix Android navigation buttons -->
-        <button class="nav-btn active" onclick="app.switchTab('dashboard', this)">Today</button>
-        <button class="nav-btn" onclick="app.switchTab('calendar', this)">Calendar</button>
-        <button class="nav-btn" onclick="app.switchTab('analytics', this)">Progress</button>
-        <button class="nav-btn" onclick="app.switchTab('settings', this)">Settings</button>
+        <button class="nav-btn active" onclick="app.switchTab('dashboard')">Today</button>
+        <button class="nav-btn" onclick="app.switchTab('calendar')">Calendar</button>
+        <button class="nav-btn" onclick="app.switchTab('analytics')">Progress</button>
+        <button class="nav-btn" onclick="app.switchTab('settings')">Settings</button>
     </nav>
 
     <main>
@@ -161,6 +158,7 @@
     <div class="modal-overlay" id="dayModal"><div class="modal"><div class="modal-header"><h3 id="modalDateTitle">Edit Day</h3><button class="modal-close" onclick="app.closeModal()">&times;</button></div><div id="modalHabitList" class="habit-list"></div><div style="margin-top: 1.5rem; text-align: right;"><button class="btn btn-primary" onclick="app.saveModalChanges()">Save Changes</button></div></div></div>
 
     <script>
+        // --- PWA SERVICE WORKER REGISTRATION ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
@@ -169,35 +167,46 @@
             });
         }
         
+        // --- ORIGINAL APP LOGIC ---
         const app = (() => {
             const DEFAULT_HABITS = [{ id: 'mr', name: 'Morning Revival', color: '#5b6bf0' }, { id: 'prayer', name: 'Prayer', color: '#2ecc71' }];
             let state = { habits: [], logs: {} };
             let currentDate = new Date(); 
             let selectedDateForModal = null;
             let charts = {}; 
-            
-            function init() { loadData(); renderHeaderDate(); renderDashboard(); renderCalendar(); renderSettings(); updateAnalytics(); document.getElementById('headerDate').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); }
+            function init() { loadData(); renderHeaderDate(); renderDashboard(); renderCalendar(); renderSettings(); document.getElementById('headerDate').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); }
             function loadData() { const stored = localStorage.getItem('spiritTrackData'); if (stored) { state = JSON.parse(stored); if(!state.habits) state.habits = [...DEFAULT_HABITS]; if(!state.logs) state.logs = {}; } else { state.habits = [...DEFAULT_HABITS]; state.logs = {}; } }
-            
-            // FIX 2: Fixed Crash because updateAnalytics was missing
-            function saveData() { 
-                localStorage.setItem('spiritTrackData', JSON.stringify(state)); 
-                updateAnalytics(); 
-            }
-            
+            // FIXED: Removed updateAnalytics() from here. It was crashing check-ins if Chart.js wasn't loaded.
+            function saveData() { localStorage.setItem('spiritTrackData', JSON.stringify(state)); } 
             const getTodayKey = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
             const formatDateKey = (date) => { return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`; };
             function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
             
-            // FIX 3: Fixed Android Navigation Logic
-            function switchTab(tabId, btnElement) { 
-                document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active')); 
-                if(btnElement) btnElement.classList.add('active'); 
+            // FIXED: switchTab logic to be robust
+            function switchTab(tabId) { 
+                // Update Nav Buttons
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    if (btn.getAttribute('onclick').includes(`'${tabId}'`)) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                }); 
+                // Update Sections
                 document.querySelectorAll('section').forEach(sec => sec.classList.remove('active')); 
                 document.getElementById(tabId).classList.add('active'); 
+                
+                // Trigger specific renders
                 if(tabId === 'dashboard') renderDashboard(); 
                 if(tabId === 'calendar') renderCalendar(); 
-                if(tabId === 'analytics') updateAnalytics(); 
+                if(tabId === 'analytics') {
+                    // Check if Chart.js is loaded before trying to render
+                    if(typeof Chart === 'undefined') {
+                        alert("Charts library failed to load. Please check your internet connection.");
+                    } else {
+                        updateAnalytics(); 
+                    }
+                }
             }
             
             function renderDashboard() { const container = document.getElementById('todayHabitList'); const todayKey = getTodayKey(); const todayLog = state.logs[todayKey] || {}; container.innerHTML = ''; state.habits.forEach(habit => { const isDone = !!todayLog[habit.id]; const el = document.createElement('div'); el.className = `habit-item ${isDone ? 'completed' : ''}`; el.onclick = () => toggleHabitToday(habit.id); el.innerHTML = `<div class="habit-info"><div class="habit-icon" style="color: ${habit.color}; background: ${habit.color}20">✦</div><span class="habit-name">${habit.name}</span></div><div class="checkbox-custom">${isDone ? '✓' : ''}</div>`; container.appendChild(el); }); }
@@ -211,68 +220,15 @@
             function renderSettings() { const list = document.getElementById('settingsHabitList'); list.innerHTML = ''; state.habits.forEach((habit, index) => { const el = document.createElement('div'); el.className = 'manager-item'; const isDefault = index < 2; el.innerHTML = `<span>${habit.name}</span>${!isDefault ? `<button class="btn btn-danger btn-sm" onclick="app.removeHabit(${index})">Remove</button>` : '<span style="font-size:0.8rem; color:#999">Default</span>'}`; list.appendChild(el); }); }
             function addHabit() { const input = document.getElementById('newHabitName'); const name = input.value.trim(); if(!name) return; const colors = ['#e67e22', '#9b59b6', '#e74c3c', '#34495e', '#16a085']; state.habits.push({ id: 'habit_' + Date.now(), name: name, color: colors[state.habits.length % colors.length] }); saveData(); input.value = ''; renderSettings(); showToast('Habit added'); }
             function removeHabit(index) { if(confirm('Delete this habit?')) { state.habits.splice(index, 1); saveData(); renderSettings(); } }
-            
-            // FIX 4: ADDED THE MISSING FUNCTION!
-            function updateAnalytics() {
-                renderHabitMetricsGrid();
-                updateComparisonCharts();
-            }
-
             function getPct(startDate, endDate, habitId = 'all') { let totalDays = 0; let totalCompletions = 0; let habitsToCheck = habitId === 'all' ? state.habits : state.habits.filter(h => h.id === habitId); const numHabits = habitsToCheck.length; if(numHabits === 0) return 0; let curr = new Date(startDate); while (curr <= endDate) { const key = formatDateKey(curr); totalDays++; if (state.logs[key]) { habitsToCheck.forEach(h => { if(state.logs[key][h.id]) totalCompletions++; }); } curr.setDate(curr.getDate() + 1); } if (totalDays === 0) return 0; return Math.round((totalCompletions / (totalDays * numHabits)) * 100); }
             function renderHabitMetricsGrid() { const grid = document.getElementById('habitMetricsGrid'); grid.innerHTML = ''; const anchor = new Date(currentDate); const start = new Date(anchor); start.setDate(anchor.getDate() - 6); state.habits.forEach(h => { const pct = getPct(start, anchor, h.id); let color = pct >= 75 ? 'var(--secondary)' : (pct >= 40 ? 'var(--accent)' : 'var(--danger)'); const el = document.createElement('div'); el.className = 'habit-metric-card'; el.style.borderLeftColor = h.color; el.innerHTML = `<div class="hm-header"><div class="hm-name">${h.name}</div><div class="hm-icon" style="color:${h.color}">✦</div></div><div class="hm-stats" style="color:${color}">${pct}%</div><div class="hm-sub">Completed Last 7 Days</div><div class="progress-track"><div class="progress-fill" style="width: ${pct}%; background-color: ${h.color}"></div></div>`; grid.appendChild(el); }); }
             function updateComparisonCharts() { const filter = document.getElementById('habitFilter'); const currentVal = filter.value; if(filter.options.length === 1 || filter.options.length !== state.habits.length + 1) { filter.innerHTML = '<option value="all">All Habits (Average)</option>'; state.habits.forEach(h => { const opt = document.createElement('option'); opt.value = h.id; opt.textContent = h.name; filter.appendChild(opt); }); if(state.habits.findIndex(h => h.id === currentVal) !== -1) { filter.value = currentVal; } } const selectedHabitId = filter.value; const now = new Date(currentDate); const weeklyData = []; const weeklyLabels = []; for(let i=0; i<4; i++) { const end = new Date(now); end.setDate(now.getDate() - (i * 7)); const start = new Date(end); start.setDate(end.getDate() - 6); weeklyData.push(getPct(start, end, selectedHabitId)); weeklyLabels.unshift(i === 0 ? 'Current Week' : `${i} Week${i>1?'s':''} Ago`); } const qData = []; const qLabels = []; const getQuarterRange = (dateOffset) => { let d = new Date(now); d.setMonth(d.getMonth() + (dateOffset * 3)); const qStart = new Date(d.getFullYear(), Math.floor(d.getMonth()/3)*3, 1); const qEnd = new Date(d.getFullYear(), Math.floor(d.getMonth()/3)*3 + 3, 0); return { start: qStart, end: dateOffset === 0 ? now : qEnd }; }; for(let i=0; i<4; i++) { const range = getQuarterRange(-i); qData.unshift(getPct(range.start, range.end, selectedHabitId)); qLabels.unshift(i === 0 ? 'Current Qtr' : `${i} Qtr${i>1?'s':''} Ago`); } const monthData = []; const monthLabels = []; for(let i=0; i<12; i++) { const d = new Date(now); d.setMonth(d.getMonth() - i); const s = new Date(d.getFullYear(), d.getMonth(), 1); const e = (i === 0) ? now : new Date(d.getFullYear(), d.getMonth() + 1, 0); monthData.unshift(getPct(s, e, selectedHabitId)); monthLabels.unshift(s.toLocaleDateString('en-US', { month: 'short' })); } const ctxW = document.getElementById('weeklyCompChart').getContext('2d'); if(charts.weekly) charts.weekly.destroy(); charts.weekly = new Chart(ctxW, { type: 'bar', data: { labels: weeklyLabels, datasets: [{ label: 'Completion %', data: weeklyData, backgroundColor: '#5b6bf0', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: false } } } }); const ctxQ = document.getElementById('quarterlyCompChart').getContext('2d'); if(charts.quarterly) charts.quarterly.destroy(); charts.quarterly = new Chart(ctxQ, { type: 'bar', data: { labels: qLabels, datasets: [{ label: 'Completion %', data: qData, backgroundColor: '#2ecc71', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: false } } } }); const ctxM = document.getElementById('monthlyCompChart').getContext('2d'); if(charts.monthly) charts.monthly.destroy(); charts.monthly = new Chart(ctxM, { type: 'bar', data: { labels: monthLabels, datasets: [{ label: 'Completion %', data: monthData, backgroundColor: '#f1c40f', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: false } } } }); const trendLabels = []; const trendData = []; for(let i=29; i>=0; i--) { const d = new Date(now); d.setDate(d.getDate() - i); const k = formatDateKey(d); trendLabels.push(k.slice(5)); const dayLog = state.logs[k] || {}; const habitsToCheck = selectedHabitId === 'all' ? state.habits : state.habits.filter(h => h.id === selectedHabitId); const count = habitsToCheck.reduce((sum, h) => sum + (dayLog[h.id] ? 1 : 0), 0); const val = selectedHabitId === 'all' ? (count / habitsToCheck.length) : count; trendData.push(val); } const ctxTrend = document.getElementById('trendChart').getContext('2d'); if(charts.trend) charts.trend.destroy(); charts.trend = new Chart(ctxTrend, { type: 'line', data: { labels: trendLabels, datasets: [{ label: selectedHabitId === 'all' ? 'Daily Avg' : 'Days Done', data: trendData, borderColor: '#5b6bf0', backgroundColor: 'rgba(91, 107, 240, 0.1)', fill: true, tension: 0.4 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } } }); }
+            function updateAnalytics() { renderHabitMetricsGrid(); updateComparisonCharts(); }
             function renderHeaderDate() { const today = new Date(); document.getElementById('headerDate').textContent = today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); }
+            function downloadChart(canvasId) { const canvas = document.getElementById(canvasId); if(!canvas) return; const link = document.createElement('a'); link.download = `${canvasId}-${new Date().toISOString().slice(0,10)}.png`; link.href = canvas.toDataURL('image/png'); document.body.appendChild(link); link.click(); document.body.removeChild(link); showToast('Chart downloaded'); }
+            function exportData(type) { if (type === 'json') { const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state)); const link = document.createElement('a'); link.setAttribute("href", dataStr); link.setAttribute("download", "spirit_track_backup.json"); document.body.appendChild(link); link.click(); link.remove(); showToast('JSON Backup Downloaded'); } else if (type === 'csv') { let csvContent = "data:text/csv;charset=utf-8,"; const header = ['Date', ...state.habits.map(h => h.name)]; csvContent += header.join(",") + "\r\n"; const sortedDates = Object.keys(state.logs).sort(); sortedDates.forEach(date => { const dayLog = state.logs[date]; const row = state.habits.map(h => dayLog[h.id] ? "Yes" : "No"); csvContent += `${date},${row.join(",")}\r\n`; }); const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent)); link.setAttribute("download", "spirit_track_data.csv"); document.body.appendChild(link); link.click(); link.remove(); showToast('CSV Downloaded'); } }
             
-            // FIX 5: Android-friendly downloads
-            function downloadChart(canvasId) { 
-                const canvas = document.getElementById(canvasId); 
-                if(!canvas) return; 
-                try {
-                    const link = document.createElement('a'); 
-                    link.download = `${canvasId}-${new Date().toISOString().slice(0,10)}.png`; 
-                    link.href = canvas.toDataURL('image/png'); 
-                    link.target = "_blank"; 
-                    document.body.appendChild(link); 
-                    link.click(); 
-                    document.body.removeChild(link); 
-                    showToast('Chart downloaded'); 
-                } catch(e) {
-                    showToast('Download not supported on this device');
-                }
-            }
-            function exportData(type) { 
-                try {
-                    let content = "", filename = "";
-                    if (type === 'json') { 
-                        content = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state)); 
-                        filename = "spirit_track_backup.json";
-                    } else if (type === 'csv') { 
-                        let csvContent = "data:text/csv;charset=utf-8,"; 
-                        const header = ['Date', ...state.habits.map(h => h.name)]; 
-                        csvContent += header.join(",") + "\r\n"; 
-                        const sortedDates = Object.keys(state.logs).sort(); 
-                        sortedDates.forEach(date => { 
-                            const dayLog = state.logs[date]; 
-                            const row = state.habits.map(h => dayLog[h.id] ? "Yes" : "No"); 
-                            csvContent += `${date},${row.join(",")}\r\n`; 
-                        }); 
-                        content = encodeURI(csvContent);
-                        filename = "spirit_track_data.csv";
-                    }
-                    const link = document.createElement('a'); 
-                    link.setAttribute("href", content); 
-                    link.setAttribute("download", filename); 
-                    link.target = "_blank"; 
-                    document.body.appendChild(link); 
-                    link.click(); 
-                    link.remove(); 
-                    showToast('Download started'); 
-                } catch(e) {
-                    showToast('Export failed: ' + e.message);
-                }
-            }
-            
-            // FIX 6: Cleaner JSON reader
+            // FIXED: Restore logic to handle bad JSON format (filename prefix)
             function restoreData() { 
                 const fileInput = document.getElementById('restoreFile'); 
                 const file = fileInput.files[0]; 
@@ -280,25 +236,30 @@
                 const reader = new FileReader(); 
                 reader.onload = function(e) { 
                     try { 
-                        let rawText = e.target.result;
-                        const firstBrace = rawText.indexOf('{');
-                        const lastBrace = rawText.lastIndexOf('}');
-                        if (firstBrace === -1 || lastBrace === -1) throw new Error("No JSON found in file.");
-                        const jsonText = rawText.substring(firstBrace, lastBrace + 1);
+                        let jsonText = e.target.result;
+                        // Strip any text before the first { to handle filenames in text files
+                        const firstBrace = jsonText.indexOf('{');
+                        if(firstBrace > 0) {
+                            jsonText = jsonText.substring(firstBrace);
+                        }
+
                         const importedState = JSON.parse(jsonText); 
                         if (!importedState.habits || !importedState.logs) throw new Error("Invalid format."); 
                         if (confirm("Replace current data?")) { 
-                            state = importedState; saveData(); showToast('Restored!'); location.reload(); 
+                            state = importedState; 
+                            saveData(); 
+                            showToast('Restored!'); 
+                            location.reload(); 
                         } 
                     } catch (err) { 
+                        console.error(err);
                         showToast("Error: " + err.message); 
                     } 
                 }; 
                 reader.readAsText(file); 
             }
             function clearData() { if(confirm('Delete all history?')) { localStorage.removeItem('spiritTrackData'); location.reload(); } }
-            
-            return { init, switchTab, toggleHabitToday, changeMonth, goToToday, addHabit, removeHabit, clearData, openDayModal, closeModal, saveModalChanges, exportData, restoreData, downloadChart, updateComparisonCharts, updateAnalytics };
+            return { init, switchTab, toggleHabitToday, changeMonth, goToToday, addHabit, removeHabit, clearData, openDayModal, closeModal, saveModalChanges, exportData, restoreData, downloadChart, updateComparisonCharts };
         })();
         document.addEventListener('DOMContentLoaded', app.init);
     </script>
