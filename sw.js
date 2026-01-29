@@ -1,46 +1,44 @@
-const CACHE_NAME = 'spirit-track-v3'; // Updated to v3 to force refresh
-
-const ASSETS_TO_CACHE = [
-    './',
-    './index.html',
-    './manifest.json',
-    './icon-192.png', // Ensure these exist in your folder
-    './icon-512.png', // Ensure these exist in your folder
-    'https://cdn.jsdelivr.net/npm/chart.js',
-    'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap'
+const CACHE_NAME = 'spirit-track-v1';
+const urlsToCache = [
+  './index.html',
+  './manifest.json',
+  // We cache the external fonts/icons so they work offline
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+  'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap'
 ];
 
-self.addEventListener('install', (e) => {
-    e.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            console.log('[Service Worker] Caching all assets');
-            return cache.addAll(ASSETS_TO_CACHE);
-        })
-    );
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
+  );
 });
 
-self.addEventListener('activate', (e) => {
-    e.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cache) => {
-                    if (cache !== CACHE_NAME) {
-                        console.log('[Service Worker] Deleting old cache:', cache);
-                        return caches.delete(cache);
-                    }
-                })
-            );
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
         })
-    );
+      );
+    })
+  );
 });
 
-self.addEventListener('fetch', (e) => {
-    // Network first, then cache strategy for dynamic data reliability, 
-    // or standard cache-first for assets if offline. 
-    // Using standard match/fetch for this simple app.
-    e.respondWith(
-        caches.match(e.request).then((response) => {
-            return response || fetch(e.request);
-        })
-    );
+self.addEventListener('fetch', event => {
+  // Ignore requests for data: URIs (the base64 icons)
+  if (event.request.url.startsWith('data:')) return;
+
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        return response || fetch(event.request).catch(() => {
+          // If offline and fetching an image, we can ignore or return nothing
+          return null;
+        });
+      })
+  );
 });
