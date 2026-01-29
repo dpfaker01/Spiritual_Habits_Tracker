@@ -2,841 +2,214 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spiritual Growth Tracker</title>
-    
-    <!-- PWA Links -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#5b6bf0">
-    <link rel="apple-touch-icon" href="icon.png">
-
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#4caf50">
+    <title>SpiritTrack</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* --- CSS VARIABLES & RESET --- */
-        :root { 
-            --primary: #5b6bf0; --primary-dark: #4856b3; --secondary: #2ecc71; 
-            --accent: #f1c40f; --danger: #e74c3c; --bg: #f4f7f6; --surface: #ffffff; 
-            --text-main: #2c3e50; --text-light: #7f8c8d; --border: #e0e0e0; 
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05); --radius: 12px; 
+        :root {
+            --primary-color: #4caf50; /* Green for spiritual/growth */
+            --bg-color: #f0f4f1;
+            --card-bg: white;
+            --text-color: #333;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
-
-        /* --- HEADER --- */
-        header { background: var(--surface); padding: 1rem 2rem; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 1.5rem; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
-        .current-date { font-size: 0.9rem; color: var(--text-light); font-weight: 500; }
-
-        /* --- NAVIGATION --- */
-        nav { display: flex; justify-content: center; background: var(--surface); margin: 1rem auto; border-radius: 50px; padding: 0.5rem; box-shadow: var(--shadow); width: 90%; max-width: 500px; }
-        .nav-btn { background: none; border: none; padding: 0.75rem 1rem; border-radius: 40px; cursor: pointer; font-weight: 500; color: var(--text-light); transition: all 0.3s ease; flex: 1; font-size: 0.9rem; }
-        .nav-btn.active { background-color: var(--primary); color: white; box-shadow: 0 2px 4px rgba(91, 107, 240, 0.3); }
-
-        /* --- MAIN LAYOUT --- */
-        main { flex: 1; padding: 1rem; max-width: 1100px; margin: 0 auto; width: 100%; padding-bottom: 3rem; }
-        section { display: none; animation: fadeIn 0.4s ease; }
-        section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        h2 { margin-bottom: 1.5rem; color: var(--text-main); }
-        .card { background: var(--surface); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); margin-bottom: 1.5rem; }
-
-        /* --- DASHBOARD (HABIT LIST) --- */
-        .habit-list { display: grid; gap: 1rem; }
-        .habit-item { display: flex; align-items: center; justify-content: space-between; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius); transition: all 0.2s; cursor: pointer; user-select: none; }
-        .habit-item:hover { border-color: var(--primary); background-color: #f8f9ff; }
-        .habit-item.completed { background-color: rgba(46, 204, 113, 0.1); border-color: var(--secondary); }
-        .habit-info { display: flex; align-items: center; gap: 1rem; }
-        .habit-icon { width: 40px; height: 40px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-        .checkbox-custom { width: 24px; height: 24px; border: 2px solid var(--text-light); border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-        .habit-item.completed .checkbox-custom { background-color: var(--secondary); border-color: var(--secondary); color: white; }
-
-        /* --- ANALYTICS --- */
-        .habit-metrics-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 2rem; }
-        @media (min-width: 768px) { .habit-metrics-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); } }
-        .habit-metric-card { background: var(--surface); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow); border-left: 5px solid var(--border); }
-        .hm-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
-        .hm-name { font-weight: 600; font-size: 1.1rem; }
-        .hm-stats { font-size: 2.5rem; font-weight: 700; line-height: 1; margin-bottom: 0.25rem; }
-        .hm-sub { font-size: 0.9rem; color: var(--text-light); margin-bottom: 1rem; }
-        .progress-track { background: #eee; height: 8px; border-radius: 4px; overflow: hidden; }
-        .progress-fill { height: 100%; border-radius: 4px; width: 0%; transition: width 1s ease; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-color); color: var(--text-color); height: 100vh; display: flex; flex-direction: column; }
         
-        .chart-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
-        .select-wrapper select { padding: 0.5rem 2rem 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border); background: white; font-size: 0.95rem; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 0.7rem top 50%; background-size: 0.65rem auto; }
-        .charts-container { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-        @media (min-width: 900px) { .charts-container { grid-template-columns: 1fr 1fr; } .full-width { grid-column: span 2; } }
-        .chart-wrapper { background: var(--surface); padding: 1rem; border-radius: var(--radius); box-shadow: var(--shadow); height: 350px; position: relative; display: flex; flex-direction: column; }
-        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
-        .chart-title { font-size: 0.9rem; font-weight: 600; color: var(--text-light); }
-        .btn-download { background: none; border: none; cursor: pointer; color: var(--text-light); font-size: 1.1rem; padding: 4px; border-radius: 4px; transition: background 0.2s; }
-        .btn-download:hover { background: #eee; color: var(--primary); }
-
-        /* --- CALENDAR --- */
-        .calendar-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        .calendar-btn { background: var(--surface); border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; }
-        .cal-day-header { text-align: center; font-weight: 600; color: var(--text-light); padding: 0.5rem; font-size: 0.9rem; }
-        .cal-day { background: var(--surface); min-height: 80px; border-radius: 8px; padding: 0.5rem; border: 1px solid transparent; cursor: pointer; transition: all 0.2s; position: relative; }
-        .cal-day:hover { border-color: var(--primary); }
-        .cal-day.today { background-color: rgba(91, 107, 240, 0.05); border-color: var(--primary); }
-        .cal-date { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem; }
-        .cal-dots { display: flex; flex-wrap: wrap; gap: 3px; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; }
-
-        /* --- SETTINGS & FORMS --- */
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
-        .form-control { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; }
-        .data-row { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #eee; }
-        .data-row:last-child { border-bottom: none; }
+        /* Header */
+        header { background-color: #e8f5e9; padding: 15px; display: flex; align-items: center; color: #2e7d32; font-weight: bold; font-size: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        header i { margin-right: 10px; }
         
-        .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: 500; cursor: pointer; transition: background 0.2s; font-size: 0.9rem; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); }
-        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
-        .btn-outline:hover { background: #f0f4ff; }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-danger:hover { background: #c0392b; }
-        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
-        
-        .habit-manager-list { margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 1rem; }
-        .manager-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #eee; }
+        /* Navigation Pill */
+        .nav-container { padding: 20px; text-align: center; }
+        .nav-pills { display: inline-flex; background: white; padding: 5px; border-radius: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .nav-item { padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: 500; color: #666; transition: 0.3s; }
+        .nav-item.active { background-color: #4e54c8; background: linear-gradient(to right, #56ab2f, #a8e063); color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
-        /* --- UI ELEMENTS --- */
-        .toast { position: fixed; bottom: 20px; right: 20px; background: #333; color: white; padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); opacity: 0; transform: translateY(20px); transition: all 0.3s ease; z-index: 1000; }
-        .toast.show { opacity: 1; transform: translateY(0); }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 200; }
-        .modal { background: var(--surface); padding: 2rem; border-radius: var(--radius); width: 90%; max-width: 400px; }
-        .modal-header { display: flex; justify-content: space-between; margin-bottom: 1rem; }
-        .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+        /* Main Content */
+        .container { max-width: 600px; margin: 0 auto; padding: 0 20px; flex-grow: 1; overflow-y: auto; }
+        h2 { margin: 20px 0; font-size: 22px; color: #2d3436; }
+
+        /* Habit Card */
+        .habit-card { 
+            background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; 
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #eee;
+            cursor: pointer; transition: transform 0.1s;
+        }
+        .habit-card:active { transform: scale(0.98); }
+        .habit-info { display: flex; align-items: center; gap: 15px; }
+        .habit-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .icon-purple { background-color: #e8eaf6; color: #3f51b5; }
+        .icon-green { background-color: #e8f5e9; color: #4caf50; }
+        .habit-name { font-size: 16px; font-weight: 500; }
+        
+        /* Checkbox */
+        .check-circle { width: 28px; height: 28px; border: 2px solid #ddd; border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .habit-card.completed .check-circle { background-color: var(--primary-color); border-color: var(--primary-color); }
+        .habit-card.completed .check-circle::after { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: white; font-size: 14px; }
+
+        /* Footer Message */
+        .footer-msg { text-align: center; color: #888; margin-top: 30px; font-size: 14px; padding-bottom: 20px; }
+
+        /* Analytics Section (Hidden by default) */
+        #analytics-section { display: none; background: white; padding: 20px; border-radius: 12px; margin-top: 20px; }
+        .progress-bar { height: 10px; background: #eee; border-radius: 5px; overflow: hidden; margin-top: 10px; }
+        .progress-fill { height: 100%; background: var(--primary-color); width: 0%; transition: width 0.5s; }
     </style>
 </head>
 <body>
+
     <header>
-        <div class="logo"><span>🌿</span> SpiritTrack</div>
-        <div class="current-date" id="headerDate"></div>
+        <i class="fas fa-leaf"></i> SpiritTrack
     </header>
 
-    <nav>
-        <button class="nav-btn active" data-tab="dashboard">Today</button>
-        <button class="nav-btn" data-tab="calendar">Calendar</button>
-        <button class="nav-btn" data-tab="analytics">Progress</button>
-        <button class="nav-btn" data-tab="settings">Settings</button>
-    </nav>
+    <div class="nav-container">
+        <div class="nav-pills">
+            <div class="nav-item active" onclick="switchTab('today')">Today</div>
+            <div class="nav-item" onclick="switchTab('progress')">Progress</div>
+            <div class="nav-item" onclick="switchTab('settings')">Settings</div>
+        </div>
+    </div>
 
-    <main>
-        <!-- DASHBOARD SECTION -->
-        <section id="dashboard" class="active">
-            <h2 id="dashboardTitle">Today's Check-in</h2>
-            <div class="card"><div class="habit-list" id="todayHabitList"></div></div>
-            <div class="card" style="text-align: center; color: var(--text-light);">
-                <p>Complete your habits daily to track your growth.</p>
-            </div>
-        </section>
-
-        <!-- CALENDAR SECTION -->
-        <section id="calendar">
-            <h2>History</h2>
-            <div class="card">
-                <div class="calendar-controls">
-                    <button class="calendar-btn" id="prevMonthBtn">&lt; Prev</button>
-                    <h3 id="calendarMonthLabel">Month Year</h3>
-                    <div>
-                        <button class="calendar-btn" id="todayBtn">Today</button>
-                        <button class="calendar-btn" id="nextMonthBtn">Next &gt;</button>
-                    </div>
-                </div>
-                <div class="calendar-grid">
-                    <div class="cal-day-header">Sun</div><div class="cal-day-header">Mon</div><div class="cal-day-header">Tue</div>
-                    <div class="cal-day-header">Wed</div><div class="cal-day-header">Thu</div><div class="cal-day-header">Fri</div><div class="cal-day-header">Sat</div>
-                </div>
-                <div class="calendar-grid" id="calendarGrid"></div>
-            </div>
-        </section>
-
-        <!-- ANALYTICS SECTION -->
-        <section id="analytics">
-            <h2>Growth Statistics</h2>
-            <p style="margin-bottom: 1rem; color: var(--text-light); font-size: 0.9rem;">Displaying data relative to the date selected in the Calendar.</p>
-            <h3>Habit Performance (7 Days prior to selected date)</h3>
-            <div class="habit-metrics-grid" id="habitMetricsGrid"></div>
+    <div class="container">
+        <!-- Today View -->
+        <div id="view-today">
+            <h2>Today's Check-in</h2>
             
-            <div class="chart-controls">
-                <div class="select-wrapper">
-                    <select id="habitFilter">
-                        <option value="all">All Habits (Average)</option>
-                    </select>
+            <div class="habit-card" id="habit-mr" onclick="toggleHabit('Morning Revival', 'habit-mr')">
+                <div class="habit-info">
+                    <div class="habit-icon icon-purple"><i class="fas fa-book-open"></i></div>
+                    <div class="habit-name">Morning Revival</div>
                 </div>
+                <div class="check-circle"></div>
             </div>
-            
-            <div class="charts-container">
-                <div class="chart-wrapper">
-                    <div class="chart-header">
-                        <div class="chart-title">Weekly Comparison (4 Weeks)</div>
-                        <button class="btn-download" data-chart="weeklyCompChart" title="Download Chart">⬇</button>
-                    </div>
-                    <div style="flex:1; position: relative;"><canvas id="weeklyCompChart"></canvas></div>
-                </div>
-                <div class="chart-wrapper">
-                    <div class="chart-header">
-                        <div class="chart-title">Quarterly Comparison (4 Quarters)</div>
-                        <button class="btn-download" data-chart="quarterlyCompChart" title="Download Chart">⬇</button>
-                    </div>
-                    <div style="flex:1; position: relative;"><canvas id="quarterlyCompChart"></canvas></div>
-                </div>
-                <div class="chart-wrapper full-width">
-                    <div class="chart-header">
-                        <div class="chart-title">Monthly History (12 Months)</div>
-                        <button class="btn-download" data-chart="monthlyCompChart" title="Download Chart">⬇</button>
-                    </div>
-                    <div style="flex:1; position: relative;"><canvas id="monthlyCompChart"></canvas></div>
-                </div>
-                <div class="chart-wrapper full-width">
-                    <div class="chart-header">
-                        <div class="chart-title">Daily Trend (30 Days prior to selected date)</div>
-                        <button class="btn-download" data-chart="trendChart" title="Download Chart">⬇</button>
-                    </div>
-                    <div style="flex:1; position: relative;"><canvas id="trendChart"></canvas></div>
-                </div>
-                
-                <div class="chart-wrapper">
-                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center;">
-                        <h3>Data Export</h3>
-                        <p style="margin-bottom: 1rem; color: var(--text-light);">Backup your logs or analyze in Excel.</p>
-                        <button class="btn btn-primary" id="exportJsonBtn">Backup (JSON)</button>
-                        <button class="btn btn-outline" id="exportCsvBtn" style="margin-top: 0.5rem;">Spreadsheet (CSV)</button>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- SETTINGS SECTION -->
-        <section id="settings">
-            <h2>Manage Habits</h2>
-            <div class="card">
-                <div class="form-group">
-                    <label>Add New Activity</label>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <input type="text" id="newHabitName" class="form-control" placeholder="e.g. Scripture Reading">
-                        <button class="btn btn-primary" id="addHabitBtn">Add</button>
-                    </div>
+            <div class="habit-card" id="habit-prayer" onclick="toggleHabit('Prayer', 'habit-prayer')">
+                <div class="habit-info">
+                    <div class="habit-icon icon-green"><i class="fas fa-hands-praying"></i></div>
+                    <div class="habit-name">Prayer</div>
                 </div>
-                <div class="habit-manager-list" id="settingsHabitList"></div>
+                <div class="check-circle"></div>
             </div>
-            
-            <div class="card">
-                <h3>Data Management</h3>
-                <div class="data-row">
-                    <span>Backup Data (JSON)</span>
-                    <button class="btn btn-outline btn-sm" id="backupBtn">Download</button>
-                </div>
-                <div class="data-row" style="align-items: flex-start; padding-top: 1rem;">
-                    <div>
-                        <strong>Restore Data</strong>
-                        <p style="font-size: 0.8rem; color: var(--text-light);">Upload a JSON file to replace current data.</p>
-                    </div>
-                    <div style="text-align: right;">
-                        <input type="file" id="restoreFile" accept=".json" style="display:none">
-                        <button class="btn btn-outline btn-sm" id="chooseFileBtn">Choose File</button>
-                        <div id="fileName" style="font-size: 0.75rem; margin-top: 4px; color: var(--primary);">No file chosen</div>
-                        <button class="btn btn-primary btn-sm" id="restoreBtn" style="margin-top: 5px;">Restore Now</button>
-                    </div>
-                </div>
-                <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid var(--border);">
-                <div class="data-row" style="color: var(--danger);">
-                    <div>
-                        <strong>Danger Zone</strong>
-                        <p style="font-size: 0.8rem;">Permanently delete all history.</p>
-                    </div>
-                    <button class="btn btn-danger btn-sm" id="clearDataBtn">Reset All</button>
-                </div>
-            </div>
-        </section>
-    </main>
 
-    <!-- TOAST & MODAL -->
-    <div id="toast" class="toast">Action Successful</div>
-    <div class="modal-overlay" id="dayModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 id="modalDateTitle">Edit Day</h3>
-                <button class="modal-close" id="closeModalBtn">&times;</button>
+            <div class="footer-msg">
+                Complete your habits daily to track your growth.
             </div>
-            <div id="modalHabitList" class="habit-list"></div>
-            <div style="margin-top: 1.5rem; text-align: right;">
-                <button class="btn btn-primary" id="saveModalBtn">Save Changes</button>
+        </div>
+
+        <!-- Progress View -->
+        <div id="view-progress" style="display:none;">
+            <h2>Your Growth</h2>
+            <div id="analytics-section" style="display:block;">
+                <p>Today's Completion</p>
+                <div class="progress-bar"><div id="daily-progress" class="progress-fill"></div></div>
+                <p style="margin-top:10px; font-size:12px; color:#666;" id="progress-text">0% Completed</p>
+            </div>
+        </div>
+
+        <!-- Settings View -->
+        <div id="view-settings" style="display:none;">
+            <h2>Settings</h2>
+            <div class="habit-card" onclick="resetData()">
+                <div class="habit-info">
+                    <div class="habit-icon" style="background:#fee; color:red;"><i class="fas fa-trash"></i></div>
+                    <div class="habit-name">Reset Data</div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- PWA SERVICE WORKER REGISTRATION ---
+        // PWA Register
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker registered!', reg))
-                    .catch(err => console.log('Service Worker failed:', err));
-            });
+            navigator.serviceWorker.register('./sw.js')
+                .then(() => console.log('Service Worker Registered'));
         }
 
-        // --- APP LOGIC ---
-        const app = (() => {
-            // State
-            const DEFAULT_HABITS = [
-                { id: 'mr', name: 'Morning Revival', color: '#5b6bf0' }, 
-                { id: 'prayer', name: 'Prayer', color: '#2ecc71' }
-            ];
-            let state = { habits: [], logs: {} };
-            let currentDate = new Date(); // Used for Calendar navigation
-            let selectedDateForModal = null;
-            let charts = {}; // Store chart instances
+        // App State
+        let todayData = JSON.parse(localStorage.getItem('spirit_today')) || { 'Morning Revival': false, 'Prayer': false };
+        const todayStr = new Date().toDateString();
 
-            // Helpers
-            const $ = (selector) => document.querySelector(selector);
-            const $$ = (selector) => document.querySelectorAll(selector);
+        // Check if new day
+        const savedDate = localStorage.getItem('spirit_date');
+        if (savedDate !== todayStr) {
+            // Reset for new day
+            todayData = { 'Morning Revival': false, 'Prayer': false };
+            localStorage.setItem('spirit_date', todayStr);
+            localStorage.setItem('spirit_today', JSON.stringify(todayData));
+        }
+
+        // Init App
+        function init() {
+            // Apply saved state to UI
+            if(todayData['Morning Revival']) document.getElementById('habit-mr').classList.add('completed');
+            if(todayData['Prayer']) document.getElementById('habit-prayer').classList.add('completed');
+            updateAnalytics(); // THIS WAS THE MISSING FUNCTION CAUSING YOUR ERROR
+        }
+
+        function toggleHabit(name, elId) {
+            const el = document.getElementById(elId);
+            const isDone = el.classList.toggle('completed');
             
-            const getTodayKey = () => {
-                const d = new Date();
-                return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-            };
+            // Save state
+            todayData[name] = isDone;
+            localStorage.setItem('spirit_today', JSON.stringify(todayData));
+            
+            // Trigger Analytics update
+            updateAnalytics();
+        }
 
-            const formatDateKey = (date) => {
-                return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-            };
+        // --- THIS IS THE FUNCTION THAT WAS MISSING ---
+        function updateAnalytics() {
+            const habits = Object.keys(todayData);
+            const total = habits.length;
+            const completed = habits.filter(h => todayData[h]).length;
+            const percent = (completed / total) * 100;
 
-            const showToast = (msg) => {
-                const t = $('#toast');
-                t.textContent = msg;
-                t.classList.add('show');
-                setTimeout(() => t.classList.remove('show'), 3000);
-            };
+            const bar = document.getElementById('daily-progress');
+            const text = document.getElementById('progress-text');
+            
+            if(bar && text) {
+                bar.style.width = percent + '%';
+                text.textContent = Math.round(percent) + '% Completed';
+            }
+        }
 
-            // Data Management
-            const loadData = () => {
-                try {
-                    const stored = localStorage.getItem('spiritTrackData');
-                    if (stored) {
-                        const parsed = JSON.parse(stored);
-                        // Validate structure
-                        if (parsed.habits && parsed.logs) {
-                            state = parsed;
-                        } else {
-                            throw new Error("Invalid structure");
-                        }
-                    } else {
-                        // First load
-                        state.habits = [...DEFAULT_HABITS];
-                        state.logs = {};
-                    }
-                } catch (e) {
-                    console.error("Data load error, resetting defaults", e);
-                    state.habits = [...DEFAULT_HABITS];
-                    state.logs = {};
-                }
-            };
+        function switchTab(tab) {
+            // Hide all views
+            document.getElementById('view-today').style.display = 'none';
+            document.getElementById('view-progress').style.display = 'none';
+            document.getElementById('view-settings').style.display = 'none';
+            
+            // Reset Nav styling
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 
-            const saveData = () => {
-                localStorage.setItem('spiritTrackData', JSON.stringify(state));
-                updateAnalytics(); // Refresh charts when data changes
-            };
+            // Show selected
+            if(tab === 'today') {
+                document.getElementById('view-today').style.display = 'block';
+                document.querySelectorAll('.nav-item')[0].classList.add('active');
+            } else if (tab === 'progress') {
+                document.getElementById('view-progress').style.display = 'block';
+                document.querySelectorAll('.nav-item')[1].classList.add('active');
+                updateAnalytics();
+            } else {
+                document.getElementById('view-settings').style.display = 'block';
+                document.querySelectorAll('.nav-item')[2].classList.add('active');
+            }
+        }
 
-            // UI Rendering
-            const renderHeaderDate = () => {
-                const today = new Date();
-                $('#headerDate').textContent = today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            };
+        function resetData() {
+            if(confirm("Reset all data?")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
 
-            const renderDashboard = () => {
-                const container = $('#todayHabitList');
-                const todayKey = getTodayKey();
-                const todayLog = state.logs[todayKey] || {};
-                container.innerHTML = '';
-
-                state.habits.forEach(habit => {
-                    const isDone = !!todayLog[habit.id];
-                    const el = document.createElement('div');
-                    el.className = `habit-item ${isDone ? 'completed' : ''}`;
-                    
-                    // Add click event properly
-                    el.addEventListener('click', () => toggleHabitToday(habit.id));
-                    
-                    el.innerHTML = `
-                        <div class="habit-info">
-                            <div class="habit-icon" style="color: ${habit.color}; background: ${habit.color}20">✦</div>
-                            <span class="habit-name">${habit.name}</span>
-                        </div>
-                        <div class="checkbox-custom">${isDone ? '✓' : ''}</div>
-                    `;
-                    container.appendChild(el);
-                });
-            };
-
-            const toggleHabitToday = (habitId) => {
-                const todayKey = getTodayKey();
-                if (!state.logs[todayKey]) state.logs[todayKey] = {};
-                
-                // Toggle state
-                state.logs[todayKey][habitId] = !state.logs[todayKey][habitId];
-                
-                // Clean up empty day logs
-                if (Object.keys(state.logs[todayKey]).every(k => !state.logs[todayKey][k])) {
-                    delete state.logs[todayKey];
-                }
-                
-                saveData();
-                renderDashboard();
-            };
-
-            const renderCalendar = () => {
-                const grid = $('#calendarGrid');
-                const label = $('#calendarMonthLabel');
-                grid.innerHTML = '';
-                
-                const year = currentDate.getFullYear();
-                const month = currentDate.getMonth();
-                label.textContent = new Date(year, month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-
-                const firstDayOfMonth = new Date(year, month, 1).getDay();
-                const daysInMonth = new Date(year, month + 1, 0).getDate();
-                const todayKey = getTodayKey();
-
-                // Empty cells for days before 1st
-                for (let i = 0; i < firstDayOfMonth; i++) {
-                    grid.appendChild(document.createElement('div'));
-                }
-
-                for (let d = 1; d <= daysInMonth; d++) {
-                    const dateObj = new Date(year, month, d);
-                    const dateKey = formatDateKey(dateObj);
-                    const dayLog = state.logs[dateKey] || {};
-                    
-                    const dayEl = document.createElement('div');
-                    dayEl.className = `cal-day ${dateKey === todayKey ? 'today' : ''}`;
-                    
-                    // Interaction
-                    dayEl.addEventListener('click', () => {
-                        currentDate = dateObj; // Set navigation to this date
-                        openDayModal(dateKey);
-                    });
-
-                    let dotsHtml = '';
-                    state.habits.forEach(h => {
-                        if(dayLog[h.id]) dotsHtml += `<div class="dot" style="background-color: ${h.color}"></div>`;
-                    });
-
-                    dayEl.innerHTML = `<div class="cal-date">${d}</div><div class="cal-dots">${dotsHtml}</div>`;
-                    grid.appendChild(dayEl);
-                }
-            };
-
-            const renderSettings = () => {
-                const list = $('#settingsHabitList');
-                list.innerHTML = '';
-                state.habits.forEach((habit, index) => {
-                    const el = document.createElement('div');
-                    el.className = 'manager-item';
-                    const isDefault = index < 2;
-                    // We can't use onclick="..." here, use addEventListener or create button dynamically
-                    if (!isDefault) {
-                        const btn = document.createElement('button');
-                        btn.className = 'btn btn-danger btn-sm';
-                        btn.textContent = 'Remove';
-                        btn.onclick = () => removeHabit(index);
-                        el.innerHTML = `<span>${habit.name}</span>`;
-                        el.appendChild(btn);
-                    } else {
-                        el.innerHTML = `<span>${habit.name}</span><span style="font-size:0.8rem; color:#999">Default</span>`;
-                    }
-                    list.appendChild(el);
-                });
-            };
-
-            // Modal Logic
-            const openDayModal = (dateKey) => {
-                selectedDateForModal = dateKey;
-                const modal = $('#dayModal');
-                const list = $('#modalHabitList');
-                $('#modalDateTitle').textContent = new Date(dateKey).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric' });
-                list.innerHTML = '';
-                
-                const dayLog = state.logs[dateKey] || {};
-                state.habits.forEach(habit => {
-                    const isDone = !!dayLog[habit.id];
-                    const el = document.createElement('div');
-                    el.className = `habit-item ${isDone ? 'completed' : ''}`;
-                    
-                    el.addEventListener('click', () => {
-                        el.classList.toggle('completed');
-                        el.querySelector('.checkbox-custom').innerHTML = el.classList.contains('completed') ? '✓' : '';
-                    });
-
-                    el.innerHTML = `
-                        <div class="habit-info">
-                            <div class="habit-icon" style="color: ${habit.color}; background: ${habit.color}20">✦</div>
-                            <span class="habit-name">${habit.name}</span>
-                        </div>
-                        <div class="checkbox-custom">${isDone ? '✓' : ''}</div>
-                    `;
-                    list.appendChild(el);
-                });
-                modal.style.display = 'flex';
-            };
-
-            const closeModal = () => {
-                $('#dayModal').style.display = 'none';
-                selectedDateForModal = null;
-            };
-
-            const saveModalChanges = () => {
-                if(!selectedDateForModal) return;
-                const items = $$('#modalHabitList .habit-item');
-                const newLog = {};
-                let hasActivity = false;
-                
-                state.habits.forEach((habit, index) => {
-                    const el = items[index];
-                    const isDone = el.classList.contains('completed');
-                    if(isDone) {
-                        newLog[habit.id] = true;
-                        hasActivity = true;
-                    }
-                });
-                
-                if(hasActivity) state.logs[selectedDateForModal] = newLog;
-                else delete state.logs[selectedDateForModal];
-                
-                saveData();
-                closeModal();
-                renderCalendar();
-                showToast('Day updated');
-            };
-
-            // Settings Logic
-            const addHabit = () => {
-                const input = $('#newHabitName');
-                const name = input.value.trim();
-                if(!name) return;
-                const colors = ['#e67e22', '#9b59b6', '#e74c3c', '#34495e', '#16a085'];
-                state.habits.push({ 
-                    id: 'habit_' + Date.now(), 
-                    name: name, 
-                    color: colors[state.habits.length % colors.length] 
-                });
-                saveData();
-                input.value = '';
-                renderSettings();
-                showToast('Habit added');
-            };
-
-            const removeHabit = (index) => {
-                if(confirm('Delete this habit?')) {
-                    state.habits.splice(index, 1);
-                    saveData();
-                    renderSettings();
-                }
-            };
-
-            const clearData = () => {
-                if(confirm('Delete all history? This cannot be undone.')) {
-                    localStorage.removeItem('spiritTrackData');
-                    location.reload();
-                }
-            };
-
-            // Analytics Logic
-            const getPct = (startDate, endDate, habitId = 'all') => {
-                let totalDays = 0;
-                let totalCompletions = 0;
-                let habitsToCheck = habitId === 'all' ? state.habits : state.habits.filter(h => h.id === habitId);
-                const numHabits = habitsToCheck.length;
-                
-                if (numHabits === 0) return 0;
-                
-                let curr = new Date(startDate);
-                while (curr <= endDate) {
-                    const key = formatDateKey(curr);
-                    totalDays++;
-                    if (state.logs[key]) {
-                        habitsToCheck.forEach(h => {
-                            if(state.logs[key][h.id]) totalCompletions++;
-                        });
-                    }
-                    curr.setDate(curr.getDate() + 1);
-                }
-                if (totalDays === 0) return 0;
-                return Math.round((totalCompletions / (totalDays * numHabits)) * 100);
-            };
-
-            const renderHabitMetricsGrid = () => {
-                const grid = $('#habitMetricsGrid');
-                grid.innerHTML = '';
-                const anchor = new Date(currentDate);
-                const start = new Date(anchor);
-                start.setDate(anchor.getDate() - 6);
-                
-                state.habits.forEach(h => {
-                    const pct = getPct(start, anchor, h.id);
-                    let color = pct >= 75 ? 'var(--secondary)' : (pct >= 40 ? 'var(--accent)' : 'var(--danger)');
-                    
-                    const el = document.createElement('div');
-                    el.className = 'habit-metric-card';
-                    el.style.borderLeftColor = h.color;
-                    el.innerHTML = `
-                        <div class="hm-header">
-                            <div class="hm-name">${h.name}</div>
-                            <div class="hm-icon" style="color:${h.color}">✦</div>
-                        </div>
-                        <div class="hm-stats" style="color:${color}">${pct}%</div>
-                        <div class="hm-sub">Completed Last 7 Days</div>
-                        <div class="progress-track">
-                            <div class="progress-fill" style="width: ${pct}%; background-color: ${h.color}"></div>
-                        </div>
-                    `;
-                    grid.appendChild(el);
-                });
-            };
-
-            const updateAnalytics = () => {
-                // Check if Chart.js loaded successfully
-                if (typeof Chart === 'undefined') {
-                    console.error("Chart.js not loaded");
-                    return;
-                }
-
-                // 1. Update Filter Dropdown
-                const filter = $('#habitFilter');
-                const currentVal = filter.value;
-                // Rebuild options if count mismatch (add/remove habits)
-                if(filter.options.length !== state.habits.length + 1) {
-                    filter.innerHTML = '<option value="all">All Habits (Average)</option>';
-                    state.habits.forEach(h => {
-                        const opt = document.createElement('option');
-                        opt.value = h.id;
-                        opt.textContent = h.name;
-                        filter.appendChild(opt);
-                    });
-                    filter.value = currentVal;
-                }
-                const selectedHabitId = filter.value;
-                const now = new Date(currentDate);
-
-                // 2. Grid Data
-                renderHabitMetricsGrid();
-
-                // 3. Prepare Data Arrays
-                const weeklyData = []; const weeklyLabels = [];
-                for(let i=0; i<4; i++) {
-                    const end = new Date(now); end.setDate(now.getDate() - (i * 7));
-                    const start = new Date(end); start.setDate(end.getDate() - 6);
-                    weeklyData.push(getPct(start, end, selectedHabitId));
-                    weeklyLabels.unshift(i === 0 ? 'Current Week' : `${i} Week${i>1?'s':''} Ago`);
-                }
-
-                const qData = []; const qLabels = [];
-                for(let i=0; i<4; i++) {
-                    const d = new Date(now); d.setMonth(d.getMonth() - (i * 3));
-                    const qStart = new Date(d.getFullYear(), Math.floor(d.getMonth()/3)*3, 1);
-                    const qEnd = (i === 0) ? now : new Date(d.getFullYear(), Math.floor(d.getMonth()/3)*3 + 3, 0);
-                    qData.unshift(getPct(qStart, qEnd, selectedHabitId));
-                    qLabels.unshift(i === 0 ? 'Current Qtr' : `${i} Qtr${i>1?'s':''} Ago`);
-                }
-
-                const monthData = []; const monthLabels = [];
-                for(let i=0; i<12; i++) {
-                    const d = new Date(now); d.setMonth(d.getMonth() - i);
-                    const s = new Date(d.getFullYear(), d.getMonth(), 1);
-                    const e = (i === 0) ? now : new Date(d.getFullYear(), d.getMonth() + 1, 0);
-                    monthData.unshift(getPct(s, e, selectedHabitId));
-                    monthLabels.unshift(s.toLocaleDateString('en-US', { month: 'short' }));
-                }
-
-                const trendLabels = []; const trendData = [];
-                for(let i=29; i>=0; i--) {
-                    const d = new Date(now); d.setDate(d.getDate() - i);
-                    const k = formatDateKey(d);
-                    trendLabels.push(k.slice(5));
-                    const dayLog = state.logs[k] || {};
-                    const habitsToCheck = selectedHabitId === 'all' ? state.habits : state.habits.filter(h => h.id === selectedHabitId);
-                    const count = habitsToCheck.reduce((sum, h) => sum + (dayLog[h.id] ? 1 : 0), 0);
-                    const val = selectedHabitId === 'all' ? (count / habitsToCheck.length) : count;
-                    trendData.push(val);
-                }
-
-                // 4. Render Charts (Destroy old first)
-                const chartConfig = (type, labels, data, color) => ({
-                    type: type,
-                    data: {
-                        labels: labels,
-                        datasets: [{ label: 'Completion %', data: data, backgroundColor: color, borderRadius: 4 }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: false } } }
-                });
-
-                const lineConfig = (labels, data, label) => ({
-                    type: 'line',
-                    data: { labels: labels, datasets: [{ label: label, data: data, borderColor: '#5b6bf0', backgroundColor: 'rgba(91, 107, 240, 0.1)', fill: true, tension: 0.4 }] },
-                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
-                });
-
-                if (charts.weekly) charts.weekly.destroy();
-                charts.weekly = new Chart($('#weeklyCompChart'), chartConfig('bar', weeklyLabels, weeklyData, '#5b6bf0'));
-
-                if (charts.quarterly) charts.quarterly.destroy();
-                charts.quarterly = new Chart($('#quarterlyCompChart'), chartConfig('bar', qLabels, qData, '#2ecc71'));
-
-                if (charts.monthly) charts.monthly.destroy();
-                charts.monthly = new Chart($('#monthlyCompChart'), chartConfig('bar', monthLabels, monthData, '#f1c40f'));
-
-                if (charts.trend) charts.trend.destroy();
-                charts.trend = new Chart($('#trendChart'), lineConfig(trendLabels, trendData, selectedHabitId === 'all' ? 'Daily Avg' : 'Days Done'));
-            };
-
-            // Export/Import
-            const exportData = (type) => {
-                if (type === 'json') {
-                    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
-                    const link = document.createElement('a');
-                    link.setAttribute("href", dataStr);
-                    link.setAttribute("download", "spirit_track_backup.json");
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
-                    showToast('JSON Backup Downloaded');
-                } else if (type === 'csv') {
-                    let csvContent = "data:text/csv;charset=utf-8,";
-                    csvContent += ['Date', ...state.habits.map(h => h.name)].join(",") + "\r\n";
-                    const sortedDates = Object.keys(state.logs).sort();
-                    sortedDates.forEach(date => {
-                        const dayLog = state.logs[date];
-                        const row = state.habits.map(h => dayLog[h.id] ? "Yes" : "No");
-                        csvContent += `${date},${row.join(",")}\r\n`;
-                    });
-                    const link = document.createElement("a");
-                    link.setAttribute("href", encodeURI(csvContent));
-                    link.setAttribute("download", "spirit_track_data.csv");
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
-                    showToast('CSV Downloaded');
-                }
-            };
-
-            const restoreData = () => {
-                const fileInput = $('#restoreFile');
-                const file = fileInput.files[0];
-                if (!file) return showToast('Select a file first.');
-                
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const importedState = JSON.parse(e.target.result);
-                        if (!importedState.habits || !importedState.logs) throw new Error("Invalid JSON format.");
-                        
-                        if (confirm("Replace current data with this backup?")) {
-                            state = importedState;
-                            saveData();
-                            showToast('Restored!');
-                            location.reload(); // Reload to refresh all views
-                        }
-                    } catch (err) {
-                        showToast("Error: Invalid file.");
-                        console.error(err);
-                    }
-                };
-                reader.readAsText(file);
-            };
-
-            const downloadChart = (canvasId) => {
-                const canvas = document.getElementById(canvasId);
-                if(!canvas) return;
-                const link = document.createElement('a');
-                link.download = `${canvasId}-${new Date().toISOString().slice(0,10)}.png`;
-                link.href = canvas.toDataURL('image/png');
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                showToast('Chart downloaded');
-            };
-
-            // Tab Switching
-            const switchTab = (tabId) => {
-                $$('.nav-btn').forEach(btn => btn.classList.remove('active'));
-                $$('.nav-btn[data-tab="' + tabId + '"]').forEach(btn => btn.classList.add('active'));
-                
-                $$('section').forEach(sec => sec.classList.remove('active'));
-                $('#' + tabId).classList.add('active');
-                
-                if(tabId === 'dashboard') renderDashboard();
-                if(tabId === 'calendar') renderCalendar();
-                if(tabId === 'analytics') updateAnalytics();
-                if(tabId === 'settings') renderSettings();
-            };
-
-            // Initialization
-            const init = () => {
-                loadData();
-                renderHeaderDate();
-                renderDashboard();
-                renderCalendar();
-                renderSettings();
-                // Check Chart.js availability before rendering analytics
-                if (typeof Chart !== 'undefined') {
-                    updateAnalytics();
-                } else {
-                    console.warn("Chart.js not loaded yet. Analytics might be blank.");
-                    // Fallback: retry after a short delay
-                    setTimeout(() => {
-                        if(typeof Chart !== 'undefined') updateAnalytics();
-                    }, 1000);
-                }
-
-                // Bind Event Listeners for Buttons that call functions
-                // Nav Buttons
-                $$('.nav-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => switchTab(e.target.dataset.tab));
-                });
-
-                // Calendar Controls
-                $('#prevMonthBtn').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
-                $('#nextMonthBtn').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
-                $('#todayBtn').addEventListener('click', () => { currentDate = new Date(); renderCalendar(); });
-
-                // Modal Controls
-                $('#closeModalBtn').addEventListener('click', closeModal);
-                $('#saveModalBtn').addEventListener('click', saveModalChanges);
-
-                // Settings Controls
-                $('#addHabitBtn').addEventListener('click', addHabit);
-                $('#clearDataBtn').addEventListener('click', clearData);
-                
-                // Export Controls
-                $('#exportJsonBtn').addEventListener('click', () => exportData('json'));
-                $('#exportCsvBtn').addEventListener('click', () => exportData('csv'));
-                $('#backupBtn').addEventListener('click', () => exportData('json'));
-                $$('.btn-download').forEach(btn => {
-                    btn.addEventListener('click', () => downloadChart(btn.dataset.chart));
-                });
-
-                // Restore Controls
-                $('#chooseFileBtn').addEventListener('click', () => $('#restoreFile').click());
-                $('#restoreFile').addEventListener('change', (e) => {
-                    $('#fileName').textContent = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
-                });
-                $('#restoreBtn').addEventListener('click', restoreData);
-            };
-
-            return {
-                init,
-                switchTab
-            };
-        })();
-
-        // Start App
-        document.addEventListener('DOMContentLoaded', app.init);
+        // Run Init on Load
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
