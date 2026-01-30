@@ -3,541 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#4caf50">
+    <meta name="theme-color" content="#667eea">
     <title>SpiritTrack</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #667eea;
-            --primary-dark: #764ba2;
-            --success: #4caf50;
-            --bg: #f5f7fa;
-            --card-bg: white;
-            --text: #2d3748;
-            --text-secondary: #718096;
-            --border: #e2e8f0;
-            --danger: #e53e3e;
-            --warning: #ecc94b;
-        }
-        
+        :root { --primary: #667eea; --primary-dark: #764ba2; --success: #48bb78; --bg: #f7fafc; --card-bg: white; --text: #2d3748; --text-secondary: #718096; --border: #e2e8f0; --danger: #e53e3e; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-        
-        /* Header */
-        header { 
-            background: white;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            z-index: 10;
-        }
-        
-        .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; color: #2e7d32; }
-        .logo i { color: var(--success); font-size: 24px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; }
+        header { background: white; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.1); z-index: 10; }
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; color: var(--primary); }
+        .logo i { color: var(--success); }
         .current-date { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
-        
-        /* Navigation */
-        .nav-container { 
-            padding: 15px; 
-            text-align: center;
-            background: white;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .nav-pills { 
-            display: inline-flex; 
-            background: #edf2f7; 
-            padding: 4px; 
-            border-radius: 50px; 
-            gap: 4px;
-        }
-        
-        .nav-item { 
-            padding: 8px 20px; 
-            border-radius: 25px; 
-            cursor: pointer; 
-            font-weight: 500; 
-            color: var(--text-secondary); 
-            transition: all 0.3s;
-            font-size: 14px;
-            border: none;
-            background: transparent;
-        }
-        
-        .nav-item:hover { color: var(--primary); }
-        
-        .nav-item.active { 
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            box-shadow: 0 4px 6px -1px rgba(102, 126, 234, 0.3);
-        }
-
-        /* Container */
-        .container { 
-            max-width: 600px; 
-            width: 100%;
-            margin: 0 auto; 
-            padding: 20px; 
-            flex-grow: 1; 
-            overflow-y: auto;
-        }
-        
-        h2 { 
-            margin: 0 0 20px 0; 
-            font-size: 20px; 
-            font-weight: 600;
-            color: var(--text);
-        }
-        
-        h3 {
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-            font-weight: 600;
-        }
-
-        /* Cards */
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            border: 1px solid var(--border);
-        }
-
-        /* Habit Cards */
-        .habit-card { 
-            background: white; 
-            padding: 16px 20px; 
-            border-radius: 12px; 
-            margin-bottom: 12px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .habit-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        
+        .nav-container { padding: 15px; text-align: center; background: white; border-bottom: 1px solid var(--border); }
+        .nav-pills { display: inline-flex; background: #edf2f7; padding: 4px; border-radius: 50px; gap: 4px; }
+        .nav-item { padding: 8px 20px; border-radius: 25px; cursor: pointer; font-weight: 600; color: var(--text-secondary); font-size: 14px; border: none; background: transparent; transition: all 0.3s; }
+        .nav-item.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; box-shadow: 0 4px 6px -1px rgba(102, 126, 234, 0.3); }
+        .container { max-width: 600px; width: 100%; margin: 0 auto; padding: 20px; flex-grow: 1; overflow-y: auto; }
+        h2 { margin: 0 0 20px 0; font-size: 20px; font-weight: 700; }
+        h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin-bottom: 12px; font-weight: 700; }
+        .card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid var(--border); }
+        .habit-card { background: white; padding: 16px 20px; border-radius: 12px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 2px solid transparent; cursor: pointer; transition: all 0.2s; }
+        .habit-card:hover { transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .habit-card:active { transform: scale(0.98); }
         .habit-card.completed { border-color: var(--success); background: #f0fff4; }
-        
         .habit-info { display: flex; align-items: center; gap: 14px; }
-        
-        .habit-icon { 
-            width: 42px; 
-            height: 42px; 
-            border-radius: 10px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 18px;
-        }
-        
-        .icon-blue { background: #ebf8ff; color: #3182ce; }
-        .icon-green { background: #f0fff4; color: var(--success); }
-        .icon-purple { background: #faf5ff; color: #805ad5; }
-        .icon-orange { background: #fffaf0; color: #dd6b20; }
-        .icon-red { background: #fff5f5; color: var(--danger); }
-        
-        .habit-text h4 {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-        
-        .habit-text p {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin: 0;
-        }
-        
-        .check-circle { 
-            width: 26px; 
-            height: 26px; 
-            border: 2px solid #cbd5e0; 
-            border-radius: 6px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            transition: all 0.2s;
-            background: white;
-        }
-        
-        .habit-card.completed .check-circle { 
-            background: var(--success); 
-            border-color: var(--success);
-        }
-        
-        .habit-card.completed .check-circle::after { 
-            content: '\f00c'; 
-            font-family: 'Font Awesome 6 Free'; 
-            font-weight: 900; 
-            color: white; 
-            font-size: 12px; 
-        }
-
-        /* Calendar */
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 0 5px;
-        }
-        
-        .calendar-btn {
-            background: white;
-            border: 1px solid var(--border);
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 13px;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-        }
-        
-        .calendar-btn:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
-            background: white;
-            padding: 15px;
-            border-radius: 16px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        
-        .day-header {
-            text-align: center;
-            font-weight: 600;
-            color: var(--text-secondary);
-            font-size: 11px;
-            padding: 8px 0;
-            text-transform: uppercase;
-        }
-        
-        .calendar-day {
-            aspect-ratio: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            cursor: pointer;
-            position: relative;
-            background: #f7fafc;
-            font-weight: 500;
-            font-size: 13px;
-            transition: all 0.2s;
-        }
-        
+        .habit-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .habit-text h4 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+        .habit-text p { font-size: 12px; color: var(--text-secondary); margin: 0; }
+        .check-circle { width: 24px; height: 24px; border: 2px solid #cbd5e0; border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; background: white; }
+        .habit-card.completed .check-circle { background: var(--success); border-color: var(--success); }
+        .habit-card.completed .check-circle::after { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: white; font-size: 12px; }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 5px; }
+        .calendar-btn { background: white; border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; color: var(--text-secondary); transition: all 0.2s; }
+        .calendar-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; background: white; padding: 15px; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .day-header { text-align: center; font-weight: 700; color: var(--text-secondary); font-size: 11px; padding: 8px 0; text-transform: uppercase; }
+        .calendar-day { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer; position: relative; background: #f7fafc; font-weight: 600; font-size: 13px; transition: all 0.2s; }
         .calendar-day:hover { background: #e6fffa; transform: scale(1.05); }
-        .calendar-day.today { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; font-weight: 700; }
+        .calendar-day.today { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
         .calendar-day.other-month { color: #cbd5e0; background: #f7fafc; }
         .calendar-day.completed { background: var(--success); color: white; }
-        .calendar-day.partial { background: var(--warning); color: #744210; }
-        
-        .day-dots {
-            display: flex;
-            gap: 2px;
-            margin-top: 3px;
-        }
-        
-        .dot {
-            width: 3px;
-            height: 3px;
-            border-radius: 50%;
-            background: currentColor;
-            opacity: 0.6;
-        }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            backdrop-filter: blur(4px);
-            padding: 20px;
-        }
-        
+        .calendar-day.partial { background: #ecc94b; color: #744210; }
+        .day-dots { display: flex; gap: 2px; margin-top: 3px; }
+        .dot { width: 3px; height: 3px; border-radius: 50%; background: currentColor; opacity: 0.6; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); padding: 20px; }
         .modal-overlay.active { display: flex; }
-        
-        .modal {
-            background: white;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 400px;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-            animation: slideUp 0.3s ease;
-        }
-        
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .modal-header {
-            padding: 20px 20px 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
+        .modal { background: white; border-radius: 20px; width: 100%; max-width: 400px; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-header { padding: 20px 20px 0 20px; display: flex; justify-content: space-between; align-items: center; }
         .modal-title { font-size: 18px; font-weight: 700; }
-        
-        .modal-close {
-            background: #f7fafc;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            color: var(--text-secondary);
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
+        .modal-close { background: #f7fafc; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: var(--text-secondary); font-size: 18px; display: flex; align-items: center; justify-content: center; }
         .modal-close:hover { background: #edf2f7; color: var(--text); }
-        
         .modal-body { padding: 20px; }
-        
-        .modal-habit {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px;
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
+        .modal-habit { display: flex; align-items: center; justify-content: space-between; padding: 14px; border: 2px solid var(--border); border-radius: 10px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; }
         .modal-habit:hover { border-color: var(--primary); background: #f7fafc; }
         .modal-habit.completed { border-color: var(--success); background: #f0fff4; }
-        
-        .save-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: all 0.2s;
-        }
-        
+        .save-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-top: 10px; }
         .save-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.3); }
-        .save-btn:active { transform: scale(0.98); }
-
-        /* Progress */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        
-        .stat-box {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid var(--border);
-        }
-        
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 4px;
-        }
-        
-        .stat-label {
-            font-size: 11px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-        }
-        
-        .progress-bar-bg {
-            height: 10px;
-            background: #edf2f7;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-        
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
-            border-radius: 10px;
-            transition: width 0.5s ease;
-        }
-
-        /* Settings */
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        
-        .input {
-            flex: 1;
-            padding: 10px 14px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 14px;
-            outline: none;
-        }
-        
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+        .stat-box { background: white; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border); }
+        .stat-value { font-size: 28px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+        .stat-label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
+        .progress-bar-bg { height: 10px; background: #edf2f7; border-radius: 10px; overflow: hidden; margin-top: 10px; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-dark)); border-radius: 10px; transition: width 0.5s ease; width: 0%; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 16px; }
+        .input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 14px; outline: none; }
         .input:focus { border-color: var(--primary); }
-        
-        .btn {
-            padding: 10px 20px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        
+        .btn { padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; transition: all 0.2s; }
         .btn:hover { background: var(--primary-dark); }
         .btn-secondary { background: #edf2f7; color: var(--text); }
         .btn-secondary:hover { background: #e2e8f0; }
         .btn-danger { background: var(--danger); }
         .btn-danger:hover { background: #c53030; }
         .btn-sm { padding: 6px 12px; font-size: 13px; }
-        
-        .habit-list-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            background: #f7fafc;
-            border-radius: 8px;
-            margin-bottom: 8px;
-        }
-        
-        .habit-list-default {
-            font-size: 12px;
-            color: var(--text-secondary);
-            background: #edf2f7;
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
-        
-        .danger-zone {
-            border: 1px solid #fed7d7;
-            background: #fff5f5;
-        }
-        
+        .habit-list-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f7fafc; border-radius: 8px; margin-bottom: 8px; }
+        .habit-tag { font-size: 11px; color: var(--text-secondary); background: #edf2f7; padding: 2px 8px; border-radius: 10px; margin-left: 8px; }
+        .danger-zone { border: 1px solid #fed7d7; background: #fff5f5; }
         .danger-zone h3 { color: var(--danger); }
-        
-        .settings-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        
+        .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
         .settings-row:last-child { border-bottom: none; padding-bottom: 0; }
-        .settings-row:first-child { padding-top: 0; }
-
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-        }
-        
-        .file-input-wrapper input[type=file] {
-            position: absolute;
-            left: -9999px;
-        }
-
-        /* Utility */
+        .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; }
+        .file-input-wrapper input[type=file] { position: absolute; left: -9999px; }
         .hidden { display: none !important; }
         .text-center { text-align: center; }
         .mt-4 { margin-top: 16px; }
         .mb-4 { margin-bottom: 16px; }
-        
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-secondary);
-        }
-        
-        .empty-state i {
-            font-size: 48px;
-            color: #cbd5e0;
-            margin-bottom: 16px;
-        }
-
-        .fade-in {
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-secondary); }
+        .check-icon { width: 24px; height: 24px; border: 2px solid #cbd5e0; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--success); }
+        .check-icon.checked { border-color: var(--success); background: var(--success); color: white; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">
-            <i class="fas fa-leaf"></i>
-            <span>SpiritTrack</span>
-        </div>
+        <div class="logo"><i class="fas fa-leaf"></i><span>SpiritTrack</span></div>
         <div class="current-date" id="header-date"></div>
     </header>
 
@@ -551,27 +110,16 @@
     </div>
 
     <div class="container">
-
-        <!-- TODAY VIEW -->
-        <div id="view-today" class="view-section fade-in">
+        <div id="view-today" class="view-section">
             <h2>Today's Check-in</h2>
-            <div id="today-habits-list">
-                <!-- Populated by JS -->
-            </div>
-            
+            <div id="today-habits-list"></div>
             <div class="empty-state" id="no-habits-msg" style="display:none;">
-                <i class="fas fa-clipboard-list"></i>
+                <i class="fas fa-clipboard-list" style="font-size:48px; color:#cbd5e0; margin-bottom:16px; display:block;"></i>
                 <p>No habits yet! Add some in Settings.</p>
-            </div>
-            
-            <div class="text-center mt-4" style="color: var(--text-secondary); font-size: 13px;">
-                <i class="fas fa-quote-left" style="margin-bottom: 8px; opacity: 0.3;"></i><br>
-                Grow spiritually, one day at a time.
             </div>
         </div>
 
-        <!-- CALENDAR VIEW -->
-        <div id="view-calendar" class="view-section hidden fade-in">
+        <div id="view-calendar" class="view-section hidden">
             <div class="calendar-header">
                 <button class="calendar-btn" onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
                 <h3 id="calendar-month-year" style="font-size: 16px; margin: 0;"></h3>
@@ -580,10 +128,8 @@
             <div class="calendar-grid" id="calendar-grid"></div>
         </div>
 
-        <!-- PROGRESS VIEW -->
-        <div id="view-progress" class="view-section hidden fade-in">
+        <div id="view-progress" class="view-section hidden">
             <h2>Your Growth</h2>
-            
             <div class="stats-grid">
                 <div class="stat-box">
                     <div class="stat-value" id="stat-streak">0</div>
@@ -594,135 +140,143 @@
                     <div class="stat-label">Completed</div>
                 </div>
             </div>
-
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <span style="font-size:14px; font-weight:600;">Today's Progress</span>
-                    <span style="font-size:14px; font-weight:700; color:var(--primary);" id="progress-percent">0%</span>
+                    <span style="font-size:14px; font-weight:700;">Today's Progress</span>
+                    <span style="font-size:14px; font-weight:800; color:var(--primary);" id="progress-percent">0%</span>
                 </div>
                 <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+                    <div class="progress-bar-fill" id="progress-bar"></div>
                 </div>
-                <p style="font-size:12px; color: var(--text-secondary); margin-top:8px;" id="progress-text">Start your journey today</p>
+                <p style="font-size:13px; color: var(--text-secondary); margin-top:10px;" id="progress-text">Start your journey today</p>
             </div>
-
             <div class="card">
-                <h3>Last 7 Days</h3>
-                <div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:8px; height:100px; align-items:end;" id="weekly-chart">
-                    <!-- Generated by JS -->
-                </div>
+                <h3>Last 7 Days Activity</h3>
+                <div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:8px; height:120px; align-items:end; margin-top:15px;" id="weekly-chart"></div>
             </div>
         </div>
 
-        <!-- SETTINGS VIEW -->
-        <div id="view-settings" class="view-section hidden fade-in">
+        <div id="view-settings" class="view-section hidden">
             <h2>Manage Habits</h2>
-            
             <div class="card">
                 <h3>Add New Activity</h3>
                 <div class="input-group">
                     <input type="text" class="input" id="new-habit-input" placeholder="e.g. Scripture Reading" onkeypress="if(event.key==='Enter')addHabit()">
                     <button class="btn" onclick="addHabit()">Add</button>
                 </div>
-                
-                <div id="habits-management-list">
-                    <!-- Populated by JS -->
-                </div>
+                <div id="habits-management-list"></div>
             </div>
-
             <div class="card">
                 <h3>Data Management</h3>
                 <div class="settings-row">
                     <div>
-                        <div style="font-weight:600; font-size:14px;">Backup Data</div>
+                        <div style="font-weight:700; font-size:14px;">Backup Data</div>
                         <div style="font-size:12px; color:var(--text-secondary);">Download JSON backup</div>
                     </div>
-                    <button class="btn btn-secondary btn-sm" onclick="exportData()">
-                        <i class="fas fa-download"></i> Download
-                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="exportData()">Download</button>
                 </div>
                 <div class="settings-row">
                     <div>
-                        <div style="font-weight:600; font-size:14px;">Restore Data</div>
-                        <div style="font-size:12px; color:var(--text-secondary);">Upload JSON file</div>
+                        <div style="font-weight:700; font-size:14px;">Restore Data</div>
+                        <div style="font-size:12px; color:var(--text-secondary);" id="import-status">Upload JSON file</div>
                     </div>
                     <div class="file-input-wrapper">
                         <input type="file" id="restore-file" accept=".json" onchange="importData(this)">
-                        <label for="restore-file" class="btn btn-secondary btn-sm" style="cursor:pointer;">
-                            <i class="fas fa-upload"></i> Choose File
-                        </label>
+                        <label for="restore-file" class="btn btn-secondary btn-sm" style="cursor:pointer;">Choose File</label>
                     </div>
                 </div>
             </div>
-
             <div class="card danger-zone">
                 <h3>Danger Zone</h3>
                 <div class="settings-row">
                     <div>
-                        <div style="font-weight:600; font-size:14px; color:var(--danger);">Reset All Data</div>
+                        <div style="font-weight:700; font-size:14px; color:var(--danger);">Reset All Data</div>
                         <div style="font-size:12px; color:var(--text-secondary);">Permanently delete all history</div>
                     </div>
-                    <button class="btn btn-danger btn-sm" onclick="resetAllData()">
-                        Reset All
-                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="resetAllData()">Reset All</button>
                 </div>
             </div>
         </div>
-
     </div>
 
-    <!-- MODAL -->
     <div class="modal-overlay" id="modal" onclick="closeModal(event)">
         <div class="modal" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h3 class="modal-title" id="modal-date">Date</h3>
                 <button class="modal-close" onclick="closeModal()">&times;</button>
             </div>
-            <div class="modal-body" id="modal-body">
-                <!-- Generated by JS -->
-            </div>
+            <div class="modal-body" id="modal-body"></div>
         </div>
     </div>
 
     <script>
-        // ==================== GLOBAL STATE ====================
+        // ==========================================
+        // DATA MIGRATION & ADAPTER (For old backups)
+        // ==========================================
+        
         let habits = [];
-        let records = {};
+        let records = {}; // Current format
         let currentMonth = new Date();
         let selectedDate = null;
         let tempModalData = {};
-
-        // ==================== CORE FUNCTIONS (defined first to avoid reference errors) ====================
+        
+        const ICONS_MAP = {
+            'mr': 'book-open',
+            'prayer': 'hands-praying',
+            'default': 'circle'
+        };
+        
+        function migrateOldData() {
+            // Check if there's old format data (logs instead of records)
+            const oldLogs = localStorage.getItem('spirittrack_logs');
+            const oldHabits = localStorage.getItem('spirittrack_habits');
+            
+            // Check current format
+            const currentRecords = localStorage.getItem('spirittrack_records');
+            
+            if (currentRecords) {
+                // Already migrated, just load
+                records = JSON.parse(currentRecords);
+                habits = JSON.parse(localStorage.getItem('spirittrack_habits') || '[]');
+            } else if (oldLogs) {
+                // Migrate from old format
+                console.log('Migrating old data format...');
+                const logs = JSON.parse(oldLogs);
+                const oldHabitsData = oldHabits ? JSON.parse(oldHabits) : [];
+                
+                records = logs || {};
+                
+                // Migrate habits format
+                if (oldHabitsData.length > 0) {
+                    habits = oldHabitsData.map(h => ({
+                        id: h.id,
+                        name: h.name,
+                        icon: ICONS_MAP[h.id] || 'star',
+                        color: 'purple' // Default color class
+                    }));
+                }
+                
+                saveToStorage();
+            } else {
+                // Fresh start with defaults
+                habits = [
+                    { id: 'mr', name: 'Morning Revival', icon: 'book-open', color: 'purple' },
+                    { id: 'prayer', name: 'Prayer', icon: 'hands-praying', color: 'green' }
+                ];
+                records = {};
+                saveToStorage();
+            }
+        }
         
         function saveToStorage() {
             localStorage.setItem('spirittrack_habits', JSON.stringify(habits));
             localStorage.setItem('spirittrack_records', JSON.stringify(records));
         }
-
-        function loadFromStorage() {
-            const savedHabits = localStorage.getItem('spirittrack_habits');
-            const savedRecords = localStorage.getItem('spirittrack_records');
-            
-            if (savedHabits) {
-                habits = JSON.parse(savedHabits);
-            } else {
-                // Default habits
-                habits = [
-                    { id: 'mr', name: 'Morning Revival', icon: 'book-open', color: 'purple' },
-                    { id: 'prayer', name: 'Prayer', icon: 'hands-praying', color: 'green' }
-                ];
-                saveToStorage();
-            }
-            
-            if (savedRecords) {
-                records = JSON.parse(savedRecords);
-            }
-        }
-
+        
         function getTodayStr() {
             return new Date().toISOString().split('T')[0];
         }
-
+        
         function getRecord(dateStr) {
             if (!records[dateStr]) {
                 records[dateStr] = {};
@@ -731,29 +285,32 @@
             return records[dateStr];
         }
 
-        // ==================== ANALYTICS (define before using) ====================
+        // ==========================================
+        // ANALYTICS
+        // ==========================================
         
         function updateAnalytics() {
-            // Update progress bar for today
+            if (habits.length === 0) return;
+            
             const todayStr = getTodayStr();
             const todayRecord = getRecord(todayStr);
-            const totalHabits = habits.length;
             const completedHabits = habits.filter(h => todayRecord[h.id]).length;
-            const percentage = totalHabits > 0 ? Math.round((completedHabits / totalHabits) * 100) : 0;
+            const percentage = Math.round((completedHabits / habits.length) * 100);
             
+            // Update progress bar
             const bar = document.getElementById('progress-bar');
             const percentText = document.getElementById('progress-percent');
             const progressMsg = document.getElementById('progress-text');
             
-            if (bar && percentText) {
-                bar.style.width = percentage + '%';
-                percentText.textContent = percentage + '%';
-                
+            if (bar) bar.style.width = percentage + '%';
+            if (percentText) percentText.textContent = percentage + '%';
+            
+            if (progressMsg) {
                 if (percentage === 100) {
-                    progressMsg.textContent = 'All habits completed! Amazing job! 🎉';
+                    progressMsg.innerHTML = 'All habits completed! Amazing job! 🎉';
                     progressMsg.style.color = 'var(--success)';
                 } else if (percentage > 0) {
-                    progressMsg.textContent = 'Keep going, you\'re doing great!';
+                    progressMsg.textContent = 'Keep going, you\'re making progress!';
                     progressMsg.style.color = 'var(--text-secondary)';
                 } else {
                     progressMsg.textContent = 'Start your spiritual journey today';
@@ -765,14 +322,13 @@
             let totalCompletions = 0;
             let currentStreak = 0;
             
-            // Total completions
             Object.values(records).forEach(record => {
                 habits.forEach(h => {
                     if (record[h.id]) totalCompletions++;
                 });
             });
             
-            // Streak calculation
+            // Calculate streak (consecutive days with all habits done)
             const today = new Date();
             for (let i = 0; i < 365; i++) {
                 const checkDate = new Date(today);
@@ -781,9 +337,7 @@
                 const record = records[dateStr];
                 
                 if (record && habits.every(h => record[h.id])) {
-                    if (i === 0 || currentStreak > 0 || record) {
-                        currentStreak++;
-                    }
+                    currentStreak++;
                 } else if (i > 0) {
                     break;
                 }
@@ -794,16 +348,16 @@
             if (streakEl) streakEl.textContent = currentStreak;
             if (totalEl) totalEl.textContent = totalCompletions;
             
-            // Weekly chart
             renderWeeklyChart();
         }
-
+        
         function renderWeeklyChart() {
             const container = document.getElementById('weekly-chart');
             if (!container) return;
             
             container.innerHTML = '';
             const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             
             for (let i = 6; i >= 0; i--) {
                 const d = new Date();
@@ -812,38 +366,59 @@
                 const record = records[dateStr] || {};
                 const completed = habits.filter(h => record[h.id]).length;
                 const percent = habits.length > 0 ? (completed / habits.length) * 100 : 0;
+                const isToday = i === 0;
                 
-                const barContainer = document.createElement('div');
-                barContainer.style.cssText = 'display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end;';
+                const barHeight = Math.max(percent, 5);
+                const barColor = percent === 100 ? '#48bb78' : (percent > 0 ? '#667eea' : '#e2e8f0');
                 
-                const bar = document.createElement('div');
-                bar.style.cssText = `width:100%; height:${Math.max(percent, 5)}%; background:${percent === 100 ? 'var(--success)' : 'var(--primary)'}; border-radius:4px 4px 0 0; transition:height 0.5s;`;
+                const wrapper = document.createElement('div');
+                wrapper.style.cssText = 'display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end;';
                 
-                const label = document.createElement('div');
-                label.style.cssText = 'font-size:10px; color:var(--text-secondary); margin-top:4px;';
-                label.textContent = days[d.getDay()];
+                wrapper.innerHTML = `
+                    <div style="font-size:10px; font-weight:600; color:${isToday ? 'var(--primary)' : '#a0aec0'}; margin-bottom:4px;">
+                        ${completed}/${habits.length}
+                    </div>
+                    <div style="width:100%; height:${barHeight}%; background:${barColor}; border-radius:4px 4px 0 0; transition:all 0.3s; min-height:4px;"></div>
+                    <div style="font-size:10px; color:#a0aec0; margin-top:4px; font-weight:600;">
+                        ${days[d.getDay()]}
+                    </div>
+                `;
                 
-                barContainer.appendChild(bar);
-                barContainer.appendChild(label);
-                container.appendChild(barContainer);
+                container.appendChild(wrapper);
             }
         }
 
-        // ==================== TODAY VIEW ====================
+        // ==========================================
+        // TODAY VIEW
+        // ==========================================
+        
+        function getHabitIconStyle(habit) {
+            // Handle hex colors from old backups vs color classes
+            if (habit.color && habit.color.startsWith('#')) {
+                return `background:${habit.color}20; color:${habit.color};`;
+            }
+            // Default color classes
+            const colors = {
+                'purple': 'background:#faf5ff; color:#805ad5;',
+                'green': 'background:#f0fff4; color:#48bb78;',
+                'blue': 'background:#ebf8ff; color:#3182ce;',
+                'orange': 'background:#fffaf0; color:#dd6b20;'
+            };
+            return colors[habit.color] || colors['purple'];
+        }
         
         function renderToday() {
             const container = document.getElementById('today-habits-list');
-            const noHabitsMsg = document.getElementById('no-habits-msg');
+            const noHabits = document.getElementById('no-habits-msg');
             
             if (!container) return;
-            
             container.innerHTML = '';
             
             if (habits.length === 0) {
-                noHabitsMsg.style.display = 'block';
+                if (noHabits) noHabits.style.display = 'block';
                 return;
             } else {
-                noHabitsMsg.style.display = 'none';
+                if (noHabits) noHabits.style.display = 'none';
             }
             
             const todayStr = getTodayStr();
@@ -855,14 +430,17 @@
                 card.className = 'habit-card' + (isCompleted ? ' completed' : '');
                 card.onclick = () => toggleHabitToday(habit.id);
                 
+                const iconClass = habit.icon || ICONS_MAP[habit.id] || 'star';
+                const style = getHabitIconStyle(habit);
+                
                 card.innerHTML = `
                     <div class="habit-info">
-                        <div class="habit-icon icon-${habit.color}">
-                            <i class="fas fa-${habit.icon}"></i>
+                        <div class="habit-icon" style="${style}">
+                            <i class="fas fa-${iconClass}"></i>
                         </div>
                         <div class="habit-text">
                             <h4>${habit.name}</h4>
-                            <p>Tap to mark complete</p>
+                            <p>${isCompleted ? 'Completed today' : 'Tap to check in'}</p>
                         </div>
                     </div>
                     <div class="check-circle"></div>
@@ -873,18 +451,18 @@
             
             updateAnalytics();
         }
-
+        
         function toggleHabitToday(habitId) {
             const todayStr = getTodayStr();
-            const todayRecord = getRecord(todayStr);
-            todayRecord[habitId] = !todayRecord[habitId];
-            
+            if (!records[todayStr]) records[todayStr] = {};
+            records[todayStr][habitId] = !records[todayStr][habitId];
             saveToStorage();
             renderToday();
-            updateAnalytics();
         }
 
-        // ==================== CALENDAR VIEW ====================
+        // ==========================================
+        // CALENDAR
+        // ==========================================
         
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
@@ -900,7 +478,6 @@
             
             grid.innerHTML = '';
             
-            // Headers
             ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(day => {
                 const div = document.createElement('div');
                 div.className = 'day-header';
@@ -912,7 +489,6 @@
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const daysInPrevMonth = new Date(year, month, 0).getDate();
             
-            // Previous month days
             for (let i = firstDay - 1; i >= 0; i--) {
                 const div = document.createElement('div');
                 div.className = 'calendar-day other-month';
@@ -920,25 +496,25 @@
                 grid.appendChild(div);
             }
             
-            // Current month
             const todayStr = getTodayStr();
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 const record = records[dateStr] || {};
-                const completed = habits.filter(h => record[h.id]).length;
+                const completedCount = habits.filter(h => record[h.id]).length;
                 
                 const div = document.createElement('div');
                 div.className = 'calendar-day';
                 div.textContent = day;
                 
                 if (dateStr === todayStr) div.classList.add('today');
-                if (completed === habits.length && habits.length > 0) div.classList.add('completed');
-                else if (completed > 0) div.classList.add('partial');
+                if (habits.length > 0 && completedCount === habits.length) div.classList.add('completed');
+                else if (completedCount > 0) div.classList.add('partial');
                 
-                if (completed > 0) {
+                if (completedCount > 0 && habits.length > 0) {
                     const dots = document.createElement('div');
                     dots.className = 'day-dots';
-                    for (let i = 0; i < Math.min(completed, 3); i++) {
+                    const dotCount = Math.min(completedCount, 3);
+                    for (let i = 0; i < dotCount; i++) {
                         const dot = document.createElement('div');
                         dot.className = 'dot';
                         dots.appendChild(dot);
@@ -950,74 +526,133 @@
                 grid.appendChild(div);
             }
         }
-
+        
         function changeMonth(delta) {
             currentMonth.setMonth(currentMonth.getMonth() + delta);
             renderCalendar();
         }
 
-        // ==================== MODAL ====================
+        // ==========================================
+        // MODAL (Fixed Click Handling)
+        // ==========================================
         
         function openModal(dateStr) {
             selectedDate = dateStr;
-            tempModalData = {...getRecord(dateStr)};
+            
+            // Initialize temp data with existing record or empty
+            if (!records[dateStr]) {
+                tempModalData = {};
+                habits.forEach(h => tempModalData[h.id] = false);
+            } else {
+                tempModalData = {...records[dateStr]};
+            }
             
             const dateObj = new Date(dateStr + 'T00:00:00');
             document.getElementById('modal-date').textContent = dateObj.toLocaleDateString('en-US', {
-                weekday: 'short', month: 'long', day: 'numeric'
+                weekday: 'short', year: 'numeric', month: 'long', day: 'numeric'
             });
             
             const container = document.getElementById('modal-body');
             container.innerHTML = '';
             
+            // Render habit list in modal
             habits.forEach(habit => {
                 const div = document.createElement('div');
-                div.className = 'modal-habit' + (tempModalData[habit.id] ? ' completed' : '');
-                div.onclick = () => {
-                    tempModalData[habit.id] = !tempModalData[habit.id];
-                    div.className = 'modal-habit' + (tempModalData[habit.id] ? ' completed' : '');
-                };
+                const isDone = tempModalData[habit.id] || false;
+                
+                div.className = 'modal-habit' + (isDone ? ' completed' : '');
+                div.style.cssText = 'display:flex; align-items:center; justify-content:space-between; padding:16px; border:2px solid ' + (isDone ? '#48bb78' : '#e2e8f0') + '; border-radius:12px; margin-bottom:12px; cursor:pointer; background:' + (isDone ? '#f0fff4' : 'white') + ';';
+                
+                const iconClass = habit.icon || ICONS_MAP[habit.id] || 'star';
+                const style = getHabitIconStyle(habit);
                 
                 div.innerHTML = `
                     <div style="display:flex; align-items:center; gap:12px;">
-                        <div class="habit-icon icon-${habit.color}" style="width:36px; height:36px; border-radius:8px;">
-                            <i class="fas fa-${habit.icon}"></i>
+                        <div style="width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; ${style}">
+                            <i class="fas fa-${iconClass}"></i>
                         </div>
-                        <span style="font-weight:500; font-size:14px;">${habit.name}</span>
+                        <span style="font-weight:600; font-size:15px; color:var(--text);">${habit.name}</span>
                     </div>
-                    <div style="width:24px; height:24px; border:2px solid ${tempModalData[habit.id] ? 'var(--success)' : '#cbd5e0'}; border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--success);">
-                        ${tempModalData[habit.id] ? '<i class="fas fa-check"></i>' : ''}
+                    <div class="check-icon ${isDone ? 'checked' : ''}" style="width:26px; height:26px; border:2px solid ${isDone ? '#48bb78' : '#cbd5e0'}; border-radius:6px; display:flex; align-items:center; justify-content:center; background:${isDone ? '#48bb78' : 'white'}; color:white; font-size:12px;">
+                        ${isDone ? '<i class="fas fa-check"></i>' : ''}
                     </div>
                 `;
+                
+                // Click handler for this specific habit row
+                div.onclick = function() {
+                    toggleModalHabit(habit.id, div);
+                };
                 
                 container.appendChild(div);
             });
             
+            // Save button
             const saveBtn = document.createElement('button');
             saveBtn.className = 'save-btn';
-            saveBtn.innerHTML = '<i class="fas fa-check"></i> Save Changes';
+            saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
             saveBtn.onclick = saveModalChanges;
             container.appendChild(saveBtn);
             
             document.getElementById('modal').classList.add('active');
         }
-
+        
+        function toggleModalHabit(habitId, element) {
+            // Toggle the data
+            tempModalData[habitId] = !tempModalData[habitId];
+            const isDone = tempModalData[habitId];
+            
+            // Update visual state immediately
+            element.className = 'modal-habit' + (isDone ? ' completed' : '');
+            element.style.borderColor = isDone ? '#48bb78' : '#e2e8f0';
+            element.style.backgroundColor = isDone ? '#f0fff4' : 'white';
+            
+            const checkIcon = element.querySelector('.check-icon');
+            if (checkIcon) {
+                checkIcon.className = 'check-icon' + (isDone ? ' checked' : '');
+                checkIcon.style.borderColor = isDone ? '#48bb78' : '#cbd5e0';
+                checkIcon.style.backgroundColor = isDone ? '#48bb78' : 'white';
+                checkIcon.innerHTML = isDone ? '<i class="fas fa-check"></i>' : '';
+            }
+        }
+        
         function saveModalChanges() {
+            if (!selectedDate) return;
+            
+            // Save to records
             records[selectedDate] = {...tempModalData};
             saveToStorage();
+            
+            // Refresh UI
             renderCalendar();
-            if (selectedDate === getTodayStr()) renderToday();
+            if (selectedDate === getTodayStr()) {
+                renderToday();
+            }
             updateAnalytics();
+            
             closeModal();
+            
+            // Show success feedback
+            const btn = document.querySelector('.save-btn');
+            if (btn) {
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+                btn.style.background = '#48bb78';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.style.background = '';
+                }, 1500);
+            }
         }
-
+        
         function closeModal(e) {
-            if (!e || e.target === document.getElementById('modal')) {
+            if (!e || e.target.id === 'modal') {
                 document.getElementById('modal').classList.remove('active');
             }
         }
 
-        // ==================== SETTINGS ====================
+        // ==========================================
+        // SETTINGS
+        // ==========================================
         
         function renderHabitsManagement() {
             const container = document.getElementById('habits-management-list');
@@ -1028,69 +663,73 @@
             habits.forEach((habit, index) => {
                 const div = document.createElement('div');
                 div.className = 'habit-list-item';
+                const isDefault = habit.id === 'mr' || habit.id === 'prayer';
+                
                 div.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <div class="habit-icon icon-${habit.color}" style="width:32px; height:32px; font-size:14px;">
-                            <i class="fas fa-${habit.icon}"></i>
+                    <div style="display:flex; align-items:center; gap:12px; flex:1;">
+                        <div style="width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; ${getHabitIconStyle(habit)}">
+                            <i class="fas fa-${habit.icon || ICONS_MAP[habit.id] || 'star'}"></i>
                         </div>
-                        <span style="font-weight:500; font-size:14px;">${habit.name}</span>
-                        ${isDefaultHabit(habit.id) ? '<span class="habit-list-default">Default</span>' : ''}
+                        <div style="flex:1;">
+                            <div style="font-weight:600; font-size:14px;">${habit.name}</div>
+                            <div style="font-size:12px; color:var(--text-secondary); text-transform:uppercase;">${habit.id}</div>
+                        </div>
+                        ${isDefault ? '<span class="habit-tag">Default</span>' : ''}
                     </div>
-                    <button class="btn btn-danger btn-sm" onclick="deleteHabit(${index})" ${isDefaultHabit(habit.id) ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    ${!isDefault ? `<button class="btn btn-danger btn-sm" onclick="deleteHabit(${index})" style="margin-left:10px;">Delete</button>` : ''}
                 `;
                 container.appendChild(div);
             });
         }
-
-        function isDefaultHabit(id) {
-            return id === 'mr' || id === 'prayer';
-        }
-
+        
         function addHabit() {
             const input = document.getElementById('new-habit-input');
             const name = input.value.trim();
-            
             if (!name) return;
             
             const id = 'habit_' + Date.now();
-            const colors = ['blue', 'green', 'purple', 'orange'];
-            const icons = ['star', 'heart', 'sun', 'moon', 'leaf', 'fire'];
+            const colors = ['purple', 'green', 'blue', 'orange'];
+            const icons = ['star', 'heart', 'sun', 'moon', 'leaf', 'fire', 'praying-hands'];
             
             habits.push({
                 id: id,
                 name: name,
-                color: colors[Math.floor(Math.random() * colors.length)],
-                icon: icons[Math.floor(Math.random() * icons.length)]
+                icon: icons[Math.floor(Math.random() * icons.length)],
+                color: colors[Math.floor(Math.random() * colors.length)]
             });
             
             saveToStorage();
             input.value = '';
             renderHabitsManagement();
             renderToday();
+            renderCalendar();
         }
-
+        
         function deleteHabit(index) {
-            if (confirm('Delete this habit and its history?')) {
-                const habitId = habits[index].id;
-                habits.splice(index, 1);
-                
-                // Clean up records
-                Object.keys(records).forEach(date => {
-                    delete records[date][habitId];
-                });
-                
-                saveToStorage();
-                renderHabitsManagement();
-                renderToday();
-                updateAnalytics();
-            }
+            if (!confirm('Are you sure you want to delete this habit and all its history?')) return;
+            
+            const habitId = habits[index].id;
+            habits.splice(index, 1);
+            
+            // Clean up records
+            Object.keys(records).forEach(date => {
+                delete records[date][habitId];
+            });
+            
+            saveToStorage();
+            renderHabitsManagement();
+            renderToday();
+            renderCalendar();
+            updateAnalytics();
         }
 
+        // ==========================================
+        // IMPORT/EXPORT (Fixed for old format)
+        // ==========================================
+        
         function exportData() {
-            const data = JSON.stringify({habits, records}, null, 2);
-            const blob = new Blob([data], {type: 'application/json'});
+            const data = { habits, records };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -1098,54 +737,106 @@
             a.click();
             URL.revokeObjectURL(url);
         }
-
+        
         function importData(input) {
             const file = input.files[0];
             if (!file) return;
+            
+            const statusEl = document.getElementById('import-status');
             
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if (data.habits && data.records) {
+                    
+                    // Handle both formats: new format (records) and old format (logs)
+                    if (data.records && data.habits) {
+                        // New format
                         habits = data.habits;
                         records = data.records;
-                        saveToStorage();
-                        renderHabitsManagement();
-                        renderToday();
-                        updateAnalytics();
-                        alert('Data restored successfully!');
+                    } else if (data.logs && data.habits) {
+                        // Old format from backup
+                        habits = data.habits.map(h => ({
+                            id: h.id,
+                            name: h.name,
+                            icon: ICONS_MAP[h.id] || 'star',
+                            color: 'purple' // Migrate hex to named or keep and handle in CSS
+                        }));
+                        records = data.logs;
                     } else {
-                        throw new Error('Invalid format');
+                        throw new Error('Invalid format: missing habits or records/logs');
                     }
+                    
+                    // Ensure all records have entries for all habits
+                    Object.keys(records).forEach(date => {
+                        habits.forEach(h => {
+                            if (records[date][h.id] === undefined) {
+                                records[date][h.id] = false;
+                            }
+                        });
+                    });
+                    
+                    saveToStorage();
+                    renderHabitsManagement();
+                    renderToday();
+                    renderCalendar();
+                    updateAnalytics();
+                    
+                    if (statusEl) {
+                        statusEl.innerHTML = '<span style="color:var(--success);"><i class="fas fa-check"></i> Import successful!</span>';
+                        setTimeout(() => {
+                            statusEl.textContent = 'Upload JSON file';
+                        }, 3000);
+                    }
+                    
+                    alert('Data restored successfully!');
+                    
                 } catch (err) {
-                    alert('Error reading file: ' + err.message);
+                    console.error('Import error:', err);
+                    if (statusEl) {
+                        statusEl.innerHTML = '<span style="color:var(--danger);"><i class="fas fa-exclamation-triangle"></i> Invalid JSON</span>';
+                        setTimeout(() => {
+                            statusEl.textContent = 'Upload JSON file';
+                        }, 3000);
+                    }
+                    alert('Error importing: ' + err.message);
                 }
+                input.value = '';
+            };
+            reader.onerror = () => {
+                alert('Error reading file');
                 input.value = '';
             };
             reader.readAsText(file);
         }
-
+        
         function resetAllData() {
-            if (confirm('Permanently delete ALL data? This cannot be undone!')) {
-                habits = [
-                    { id: 'mr', name: 'Morning Revival', icon: 'book-open', color: 'purple' },
-                    { id: 'prayer', name: 'Prayer', icon: 'hands-praying', color: 'green' }
-                ];
-                records = {};
-                saveToStorage();
-                renderHabitsManagement();
-                renderToday();
-                renderCalendar();
-                updateAnalytics();
-                alert('All data has been reset.');
-            }
+            if (!confirm('WARNING: This will permanently delete ALL your data. Are you sure?')) return;
+            
+            localStorage.removeItem('spirittrack_records');
+            localStorage.removeItem('spirittrack_habits');
+            localStorage.removeItem('spirittrack_logs'); // Old storage
+            
+            habits = [
+                { id: 'mr', name: 'Morning Revival', icon: 'book-open', color: 'purple' },
+                { id: 'prayer', name: 'Prayer', icon: 'hands-praying', color: 'green' }
+            ];
+            records = {};
+            
+            saveToStorage();
+            renderHabitsManagement();
+            renderToday();
+            renderCalendar();
+            updateAnalytics();
+            
+            alert('All data has been reset to defaults.');
         }
 
-        // ==================== NAVIGATION ====================
+        // ==========================================
+        // NAVIGATION
+        // ==========================================
         
         function switchTab(tabName) {
-            // Update nav
             document.querySelectorAll('.nav-item').forEach((el, idx) => {
                 el.classList.remove('active');
                 if ((tabName === 'today' && idx === 0) || 
@@ -1156,44 +847,46 @@
                 }
             });
             
-            // Hide all views
             document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-            
-            // Show selected
             document.getElementById(`view-${tabName}`).classList.remove('hidden');
             
-            // Refresh data
             if (tabName === 'today') renderToday();
             if (tabName === 'calendar') renderCalendar();
             if (tabName === 'progress') updateAnalytics();
             if (tabName === 'settings') renderHabitsManagement();
         }
 
-        // ==================== INIT ====================
+        // ==========================================
+        // INIT
+        // ==========================================
         
         function init() {
-            // Set header date
             document.getElementById('header-date').textContent = new Date().toLocaleDateString('en-US', {
                 weekday: 'long', month: 'short', day: 'numeric'
             });
             
-            // Load data
-            loadFromStorage();
+            // Migrate old data format if exists
+            migrateOldData();
             
-            // Initial render
+            // Ensure habits have icons (for migrated data)
+            habits = habits.map(h => ({
+                ...h,
+                icon: h.icon || ICONS_MAP[h.id] || 'star',
+                color: h.color || 'purple'
+            }));
+            saveToStorage();
+            
             renderToday();
             renderCalendar();
             updateAnalytics();
             
-            // Register Service Worker
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(() => console.log('Service Worker registered'))
+                    .then(() => console.log('SW registered'))
                     .catch(err => console.log('SW error:', err));
             }
         }
-
-        // Start app
+        
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', init);
         } else {
