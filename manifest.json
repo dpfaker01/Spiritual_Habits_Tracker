@@ -3,19 +3,19 @@
   "short_name": "SpiritTrack",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#4caf50",
+  "background_color": "#f7fafc",
+  "theme_color": "#667eea",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADIAQMAAACXljzdAAAABlBMVEUAAABLrPBXrZQnAAAAAXRSTlMAQObYZgAAADRJREFUaN7twTEBAAAAwiD7p7bGDmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQBkAAAAFATX8OAAAAAElFTkSuQmCC",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADIAQMAAACXljzdAAAABlBMVEUAAABLrPBXrZQnAAAAAXRSTlMAQObYZgAAADRJREFUaN7twTEBAAAAwiD7p7bGDmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQBkAAAAFATX8OAAAAAElFTkSuQmCC",
+      "src": "https://cdn-icons-png.flaticon.com/512/2913/2913465.png",
       "type": "image/png",
       "sizes": "512x512"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/128/2913/2913465.png",
+      "type": "image/png",
+      "sizes": "128x128"
     }
   ]
 }
